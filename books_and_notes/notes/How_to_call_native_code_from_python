@@ -1,0 +1,136 @@
+Purpose - How to call a native C/C++ program from Python Application
+
+Pre-requisite
+Fedora 31 with gcc and g++ installed
+
+Python Language is currently the most popular and trending langugage because of the vast majority of the domains wherein this language can be used. But still as this is a dynamically typed language and the code is interpreted rather then compiled to a native platform specific instructions it has some performance lag. This performance delay though is not of much significance in small programs but it makes a differnce in large and complex programs where performance is the most important factor.
+
+To mitigate this gap in complex programs, one solution that we can use is to code the time critical and complex operational logic using the native language like C/C++ and call these compiled native language code from our Python program. This way we can offload the compute intensive code to native language to take advantange of performance metric and build the rest of the application using Python.
+
+Here in this article we will see two simple C/C++ progam which we can call from our Python code
+
+Procedure -
+
+=============================================================
+Build simple C program and call from Python application code
+=============================================================
+
+Step1: Create a simple C program to return square of the number
+
+This is a simple C program which returns an integer type data by performing the squrare of the integer.
+
+[admin@fed31 cProgram]$ cat my_functions.c 
+#include <stdio.h>
+
+int square(int i) {
+	return i * i;
+}
+
+Step2: Create a Shared library file for the C program
+
+Here we are creating a shared library from the C code using gcc compiler
+
+[admin@fed31 cProgram]$ gcc -fPIC -shared -o my_functions.so my_functions.c
+
+[admin@fed31 cProgram]$ ls -ltr my_functions.*
+-rwxr-xr-x. 1 admin admin    57 Jul 12 09:42 my_functions.c
+-rwxr-xr-x. 1 admin admin 16168 Jul 12 09:43 my_functions.so
+
+Step3: Create a simple Python program to call the native C program
+
+Here is the simple Python program in which we are importing the ctypes module with which we will be able to load the C library that we generated in the above Step2.
+Once the C library is loaded and its reference is set in the variable we can call the respective C function using that reference
+
+
+[admin@fed31 cProgram]$ cat my_functions.py 
+#!/usr/bin/env python
+
+from ctypes import *
+
+file = "./my_functions.so"
+
+myfun = CDLL(file)
+
+print(type(myfun))
+print(myfun.square(10))
+
+Step4: Execute the Python program to validate the returned square of 10
+
+As you could see from the below execution we are able to capture the type of the library file and call the integer function which returns a square
+
+[admin@fed31 cProgram]$ ./my_functions.py 
+<class 'ctypes.CDLL'>
+100
+
+=============================================================
+Build simple C++ program and call from Python application code
+=============================================================
+
+Step1: Create a simple C++ program to return the string as the output
+
+This is a simple C++ program which returns an string type data from the function
+
+[admin@fed31 cpp]$ cat strfunc.cpp 
+#include <iostream>
+#include <string>
+
+using namespace std;
+
+char name[] = "fed31.stack.com";
+char value[] = "PROD";
+
+extern "C" char * getName()
+{
+
+	return name;
+
+}
+
+extern "C" char * getValue()
+{
+
+	return value;
+}
+
+Step2: Create a Shared library file for the C++ program
+
+Here we are creating a shared library from the C++ code using gcc compiler
+
+[admin@fed31 cpp]$ g++ -fPIC -shared -o strfunc.so strfunc.cpp 
+
+[admin@fed31 cpp]$ ls -ltr strfunc.*
+-rwxr-xr-x. 1 admin admin   280 Jul 13 15:50 strfunc.cpp
+-rwxrwxr-x. 1 admin admin 16936 Jul 13 15:50 strfunc.so
+
+Step3: Create a simple Python program to call the native C++ program
+
+Here is the simple Python program in which we are importing the ctypes module with which we will be able to load the C library that we generated in the above Step2.
+Once the C++ library is loaded and its reference is set in the variable we can call the respective C function using that reference
+
+
+[admin@fed31 cpp]$ cat strfunc.py 
+#!/usr/bin/env python
+
+from ctypes import *
+
+test=cdll.LoadLibrary("./strfunc.so")
+
+test.getName.restype=c_char_p
+test.getValue.restype=c_char_p
+
+print(test.getName().decode("utf-8"))
+print(test.getValue().decode("utf-8"))
+
+Step4: Execute the Python program to validate the returned string data
+
+As you could see from the below execution we are able get the two string data value as from the C++ function
+
+[admin@fed31 cpp]$ ./strfunc.py 
+fed31.stack.com
+PROD
+
+Here with this article we could see how we can leverage C and C++ code functionality and use it in our Python program. This can be taken as basis and can apply for complex routine functions to be written in native language and then reuse them in Python application.
+
+Hope you enjoyed this article. Thank you for reading..
+
+

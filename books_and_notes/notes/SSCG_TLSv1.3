@@ -1,0 +1,100 @@
+============================================================================================================
+Easy steps to generate Self Signed certificate using OpenSSL|SSCG and enable TLSv1.3 in Apache HTTP Server
+============================================================================================================
+
+Purpose - Easy steps to generate Self Signed certificate using OpenSSL|SSCG and enable TLSv1.3 in Apache HTTP Server
+
+Pre-requisite - 
+Fedora 31 with Apache/2.4.41 installed
+
+In todays internet era and cloud computing environment, security is one of the top most priority that every organization need to give to their infrastructure and
+enable the latest security hardening features whereever possible without hampering the performance.
+
+In this article we will try to look at the latest TLS protocol TLSv1.3 and how we can enable it in Apache HTTP server and make sure its communicating with the required protocol. Also we will look at some useful tools like OpenSSL and SSCG to know how we can generate a self signed certificate using both and see which one is simple to use. So before we start working on the configuration lets gets some terms breifly described to have a better understanding.
+
+
+Transport Layer Security (TLS) v1.3 - TLS provides the secured communication between web browsers and servers. Currently TLSv1.3 is the latest available protocol
+which is considered to be faster and more secure. TLSv1.3 speeds up encrypted connections more with features such as TLS False start and Zero Round Trip time.
+TLSv1.2 uses two round-trips to complete a TLS handshake, whereas TLSv1.3 completes the handshake in one round trip in simple terms.  
+
+OpenSSL - OpenSSL is a popular full featured toolkit for TLS and SSL protocols. Its also a general purpose cryptography library
+
+Simple Signed Certificate Generator (SSCG) - As stated in the GITHUB page - https://github.com/sgallagher/sscg, 
+"SSCG makes it easy to generate usable, signed certificates quickly without needing to understand complex openssl, certtool or certutil commands."
+
+Now that we had got some clear idea about the terms used in this article lets get on to setup secure Apache HTTP server.
+
+Key and Certificate Management generally consists of the following three high level steps to be completed
+
+- Generate a strong private key
+- Create a CSR and send it to CA
+- Install the CA provided certificate to web server
+
+Lets get into the shell and try to generate the above using the OpenSSL toolkit first
+
+1. Generating RSA key without passphrase
+
+$ openssl genrsa -out rsawithoutpass.key 2048
+
+2. Generate CSR
+
+$ openssl req -new -key rsawithoutpass.key -out rsawithoutpass.csr
+
+3. Generate a signed certificate
+
+$ openssl x509 -req -days 365 -in rsawithoutpass.csr -signkey rsawithoutpass.key -out rsawithoutpasscert.crt
+
+As we are doing development and testing, here we are going to sign the certificate with self and use it for the web server rather then sending the
+certificate to a Certificate Authority (i.e CA) and procure a new signed certificate
+
+With the above three step process, we have created our key file and the self signed certificate file. This process is made simple using SSCG tool as shown below
+
+1. Default SSCG Certificate generation
+
+In this the sscg tool is generating a self signed certificate with some default values and the hostname of the server where it is run.
+
+[admin@feddesk sscg]$ /usr/bin/sscg 
+Wrote service certificate key to /home/admin/stack/certmanagement/sscg/service-key.pem
+Wrote service certificate to /home/admin/stack/certmanagement/sscg/service.pem
+Wrote CA certificate to /home/admin/stack/certmanagement/sscg/ca.crt
+
+2. SSCG Certificate generation using parameters
+
+In this we are passing parameters to sscg tool to generate a custom self signed certifcate.
+
+[admin@feddesk sscg]$ /usr/bin/sscg --lifetime=365 --country=IN --state=Maharashtra --locality=Mumbai --organization="Stack Inc." --organizational-unit="Stack" --hostname="feddesk.stack.com" --subject-alt-name www.stack.com feddesk.stack.com --key-strength=2048 --hash-alg="sha256" --ca-file=singer.pem --cert-key-file=key.pem --cert-file=main.pem --cert-mode=0644 --cert-key-mode=0600
+Wrote service certificate key to /home/admin/stack/certmanagement/sscg/key.pem
+Wrote service certificate to /home/admin/stack/certmanagement/sscg/main.pem
+Wrote CA certificate to /home/admin/stack/certmanagement/sscg/singer.pem
+
+3. Update the ssl.conf file to accept only TLSv1.3 protocol
+
+For, this i have my default httpd package installed and running, we need to edit the ssl.conf file as below to enable only TLSv1.3 protocol
+
+[root@feddesk conf.d]# cat ssl.conf
+Listen 443
+<VirtualHost *:443>
+    ServerName feddesk.stack.com
+    SSLEngine on
+#   SSLCertificateFile "/home/admin/stack/certmanagement/rsaKey_without_passphrase/rsawithoutpasscert.crt"
+#   SSLCertificateKeyFile "/home/admin/stack/certmanagement/rsaKey_without_passphrase/rsawithoutpass.key"
+
+#   Using SSCG SAN certificate and TLSv1.3 protocol
+    SSLProtocol TLSv1.3
+    SSLCertificateFile "/home/admin/stack/certmanagement/sscg/main.pem"
+    SSLCertificateKeyFile "/home/admin/stack/certmanagement/sscg/key.pem"
+</VirtualHost>
+
+4. Update the custom log format to capture the SSL protocol and cipher used for communication
+
+    #LogFormat "%h %l %u %t \"%r\" %>s %b \"%{Referer}i\" \"%{User-Agent}i\"" combined
+    LogFormat "%h %l %u %t \"%r\" %>s %{SSL_PROTOCOL}x %{SSL_CIPHER}x %b \"%{Referer}i\" \"%{User-Agent}i\"" combined
+
+5. Validate the access log to check the SSL protocol and cipher being used
+
+192.168.184.149 - - [01/Mar/2020:16:57:34 +0530] "GET / HTTP/1.1" 403 TLSv1.3 TLS_AES_128_GCM_SHA256 5564 "-" "Mozilla/5.0 (X11; Fedora; Linux x86_64; rv:73.0) Gecko/20100101 Firefox/73.0"
+192.168.184.149 - - [01/Mar/2020:17:00:34 +0530] "GET / HTTP/1.1" 403 TLSv1.3 TLS_AES_128_GCM_SHA256 5564 "-" "Mozilla/5.0 (X11; Fedora; Linux x86_64; rv:73.0) Gecko/20100101 Firefox/73.0"
+
+As you can see the TLSv1.3 protocol with TLS_AES_128_GCM_SHA256 5564 cipher is the accepted request for the Apache HTTP server.
+
+

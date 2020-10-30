@@ -1,0 +1,173 @@
+Purpose - Learning Python Modules and Packages
+
+Pre-requisites -
+Fedora 31 installed
+Python 3.7 and later
+
+What are Python Modules -
+
+Python Modules are a way to organize our program structure with reusable code build using Modules. These modules can further be used by importing in other Application code for usage. Python Modules also help in making complex program divided into various modules with specific purpose. These modules can be python code files, Java libraries, C/C++ native codes in DLL or shared library formats or any zip archive package and etc. 
+
+The main aspect of using Python Modules is for Code resuse, system namespace partitioning, implementing shared services or data. Its a self contained package of variables known as namespaces. They are the highest level program organization unit which packages code and data for resuse.
+
+Here in this article we will look below three tasks
+
+1. How to build a basic module and use it in the Python Code
+2. How Python Code executes a Module
+3. How Python Code searches for Module with Module Search Path
+4. How to build a basic Python package module and use it in the Python Code
+
+Procedure
+
+Step1: Build a basic module to return string data
+
+Here is the basic python module 'student' which has a function named getName() which when called retruns the string data which is name of the student. The python coded module names should always end with .py extension
+
+[admin@fed31 Modules]$ cat student.py 
+#!/usr/bin/env python
+
+def getName():
+    return "Ted"
+
+Step2: Build the main python code and import the student module using import statement
+
+Let now prepare our top level python code file 'main.py' in which we will try to import the student module to use it and fetch its attributes
+
+[admin@fed31 Modules]$ cat main.py 
+#!/usr/bin/env python
+
+import student
+
+print("This is top level Program: main.py")
+
+Now we have coded both main.py file and python module student.py which we are using as resuable component or tool in our main.py code. Please note that in this task we are importing the module using import statement and also the module name should be given without .py extension. Also we can placed our module file in the same director y location as that of the main.py file
+
+[admin@fed31 Modules]$ ls -ltr
+total 12
+-rwxr-xr-x. 1 admin admin  108 Aug  6 09:44 main.py
+-rwxr-xr-x. 1 admin admin   55 Aug  6 09:45 student.py
+
+
+Step3: Execute the main.py file with student module imported using import statement
+
+Here, when we exectue the main.py. As the first statment is importing a module. It will load the module and execute each statement within the module. The module load and execute step happens only when its loaded for the first time. If there is any change detected in the module, it will be reloaded when its re-executed next time.
+
+Whenever a Module is loaded and executed, it prepares a module object which is referenced using the module name without .py extension. This object now contains all the top level varialbles which are called attributes. These attributes can be called using the object.attribute statment as shown below (ie. student.getName())
+
+[admin@fed31 Modules]$ ./main.py 
+This is top level Program: main.py
+Ted
+
+Step4: Build the main python code and import the student module using from statement
+
+Here now lets modify our top level python code file 'main.py' and import the student module using from statement now. Using the from statement we are importing the top level attributes from module which can be called directly without the module object reference as shown below.
+
+[admin@fed31 Modules]$ cat main.py 
+#!/usr/bin/env python
+
+#import student
+from student import getName
+
+print("This is top level Program: main.py")
+#print(student.getName())
+print(getName())
+
+As you can see from above code we imported the getName function directly from the module student and in the last print statment we are calling with the function name directly without the module object reference.
+
+Lets now execute the main.py file and get the function output.
+
+[admin@fed31 Modules]$ ./main.py 
+This is top level Program: main.py
+Ted
+
+Until now we have seen how we can build a basic Python module and how we can import it into our top level code using the import and from statement. Also we have looked at the details on how the python module loads and executes itself. With this we have covered our first and second task which we have mentioned initially.
+
+But there is one more thing that we need to look at carefully, how is the python code able to find our module. In the above steps we have placed our module in the current working directory and it was able to find it as this is the first place where python tries to look for any imported module. 
+
+But its not always the same case. As third party modules which are distributed and installed are never installed into your current working directory and it is not a good program structure to place your module files within your current working directory as they may not be resuable by other Applications.
+
+Now let us move forward and take a look at how and where python tries to find its modules to load and execute them.
+
+Module Search Paths - Python tried to look for modules in the following locations some of which are preset and some can be configured manually. Here are the location details
+
+- Home directory of the program
+- PYTHONPATH directories (if configured)
+- Standard library directories
+- Contents of any .pth files (if configured)
+- site-packages home of third-party extensions
+
+We have already looked at the first location ie. Home directory where we placed our module file. Let now look at how we can use PYTHONPATH environment variable to search for the module to load
+
+Step1: Make a directory and export that PATH using PYTHONPATH environment
+
+[admin@fed31 Modules]$ mkdir student
+[admin@fed31 Modules]$ export PYTHONPATH=/home/admin/stack/python/simplepython/Modules/student
+[admin@fed31 Modules]$ mv student.py student
+[admin@fed31 Modules]$ ls -ltr student/
+total 4
+-rwxr-xr-x. 1 admin admin 55 Aug  6 10:21 student.py
+
+Here we have created a directory and moved our module into that loation. Also, we have exported that path using PYTHONPATH environment variable
+
+Step2: Build the main python code and import the student module using from statement
+
+[admin@fed31 Modules]$ ls -ltr
+total 12
+-rwxr-xr-x. 1 admin admin  155 Aug  6 10:21 main.py
+drwxrwxr-x. 3 admin admin 4096 Aug  7 09:11 student
+
+[admin@fed31 Modules]$ ./main.py 
+This is top level Program: main.py
+Ted
+
+As you can see from the above output, Python tried to look for the module in current directory first but was unable to find, then it looked into paths listed with PYTHONPATH environment variable and was able to load that module.
+
+In similar way you can setup to use other options to find your modules as per your requirements. But please take a note that if a module is found in any of the above search paths. It will stop searching in other paths. If by any chance you have placed your modules in other search paths it will be overrideen by the first search path where python is able to find it.
+
+Python Modules helps in organizing our program structure but there is one constraint here, we cannnot place same module names built by different team and integrate into our code and also there is a possibility of attributes from different modules to conflict if they have the same names defined. To avoid these situation Python has an approach to segregate your modules using packages. 
+
+Python Packages are a way to organize your Modules into different directory structure which can be considered as a separate entity or tool being developed. These packages when imported will have their own namespace which will not conflict with the namespace of a different package. Let us look at a simple example of Python Package to understand how it can help us in organizing a complex Program structure.
+
+Step1: Create a package com.org.stack directory structure and place module book.py
+
+As you can see below, we have created a directory structure com/org/stack and placed our module book.py in that location. This is a basic Python package module which we can build.
+
+[admin@fed31 Modules]$ tree com
+com
+└── org
+    └── stack
+        └── book.py
+
+2 directories, 1 file
+
+[admin@fed31 Modules]$ cat com/org/stack/book.py 
+#!/usr/bin/env python
+
+def getBookName():
+    return "Learning Python 5th Edition"
+
+Step2: Build the main python code and import the package com.org.stack.book module using import statement
+
+Now, we will be importing our package module using the import statement by provide the absolute path of the package in . notation format (ie. import com.org.stack.book).
+
+Here please take a note of the import statement, here we have used an alias name called book (ie. import com.org.stack.book as book) to represent our package import which can be used as a shortform in calling fucntions in package module instead of using the the complete package module name
+
+
+[admin@fed31 Modules]$ cat bookmain.py 
+#!/usr/bin/env python
+
+import com.org.stack.book as book
+
+print(book.getBookName())
+
+Step3: Execute the bookmain.py file
+
+Lets execute our bookmain.py file and check if we are able to get the Book name as defined in the package module book.py function
+
+[admin@fed31 Modules]$ ./bookmain.py 
+Learning Python 5th Edition
+
+Python Modules and Packages are a great way to organize your Program structure. There are also other advanced features and constraints which you will get to know as you get deeper into using them.
+
+Hope you enjoyed this article. Thank you for reading.
+

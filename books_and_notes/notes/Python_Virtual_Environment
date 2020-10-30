@@ -1,0 +1,153 @@
+Purpose - How to setup python virtual environment for projects having different requirements of packages and modules
+
+Pre-requisite -
+Fedora 32 updated
+Python 3.8 insatlled
+
+Python Applications use different packages and modules as per the applcation requirement. The packages and modules installed for one particular application may not be required for another application or those may not the required versions for other applications. In these scenarios we will need to isolate each application as per their packages and modules requirements. 
+
+This isolation for application specific requirements can be achieved using the Python virtual environment module which creates an isolated application specfic project directory with python installation and a number of additional packages.
+
+This virualized environment allows to make sure applications with their own specific requirement of packages and modules to be installed and used separately without having a  conflict with the other applications virtualized environment.
+
+Procedure -
+
+Step1: Make sure pip is upgraded the latest available version
+
+pip is python package manager used to install and manage software packages written in python. Make sure that this is upgraded to the latest available version before using pip for installing any specfic package or module
+
+[admin@fed32 ~]$ python -m pip install --upgrade pip --user
+Collecting pip
+  Downloading https://files.pythonhosted.org/packages/43/84/23ed6a1796480a6f1a2d38f2802901d078266bda38388954d01d3f2e821d/pip-20.1.1-py2.py3-none-any.whl (1.5MB)
+     |████████████████████████████████| 1.5MB 56kB/s 
+Installing collected packages: pip
+Successfully installed pip-20.1.1
+
+Step2: Create two project directories as shown
+
+Here we are going to visualize a case where in we have two projects (i.e project1 and project2) which require different requirement of python packages and modules.
+
+[admin@fed32 sud]$ ls -ltr
+total 8
+drwxrwxr-x. 2 admin admin 4096 Jun  3 17:13 project2
+drwxrwxr-x. 3 admin admin 4096 Jun  3 17:13 project1
+
+
+Step3: Setup virutal environment for project1
+
+Python venv module is used to install and manage the python virtual environments. venv module will create a directory as per the given name (i.e env) and install
+the latest version of python that is installed on the system. It is also possible to select a particular python version to be installed in the virutal environment
+by just referring to the appropriate python executable for your specific version.
+
+If a system has both python3.7 and python3.8 installed on the machine we can refer to any specific version of python executable and create the virtual environment.
+
+eg 
+
+$ python3.7 -m venv env
+
+The above command will create a virutal enviroment env and install python3.7 as per the requirement
+
+Here in this example my default python3.8 executable is pointing to python so it will go ahead and install python 3.8 in the virtual environment.
+
+[admin@fed32 project1]$ python -m venv env
+[admin@fed32 env]$ ls -ltr
+total 16
+drwxrwxr-x. 2 admin admin 4096 Jun  3 17:13 include
+drwxrwxr-x. 3 admin admin 4096 Jun  3 17:13 lib
+-rw-rw-r--. 1 admin admin   69 Jun  3 17:13 pyvenv.cfg
+lrwxrwxrwx. 1 admin admin    3 Jun  3 17:13 lib64 -> lib
+drwxrwxr-x. 2 admin admin 4096 Jun  3 17:13 bin
+
+Step4: Activate the virtual environment for project1
+
+Activating the virutal environment will basically switch your shell environment variable in such a away that it will point to your virtual environment directory with whatever python version is installed in there. Once your virtual environment is activated all the python commands will be executed agains the active virtual environment.
+
+Here is the command to activate your virutal environment for project1.
+
+[admin@fed32 project1]$ source env/bin/activate
+
+(env) [admin@fed32 project1]$ python -V
+Python 3.8.3
+(env) [admin@fed32 project1]$ which python
+~/sud/project1/env/bin/python
+
+
+Step5: Deactivate the virtual environment for project1
+
+In order for you to come out of your virtual environment you can run the 'deactivate' command in the current virutal environment and it will let you out from this virutal environment back to the original shell before virutal environment activation.
+
+(env) [admin@fed32 project1]$ deactivate 
+[admin@fed32 project1]$ 
+
+
+Step6: Activate the virtual environment for project2
+
+Now that we are familiar with virtual environment activation and deactivation, let us create a virtual environment for project2 and activate it as shown below.
+
+[admin@fed32 project2]$ python -m venv env
+[admin@fed32 project2]$ ls -ltr
+total 4
+drwxrwxr-x. 5 admin admin 4096 Jun  3 17:24 env
+[admin@fed32 project2]$ source env/bin/activate
+(env) [admin@fed32 project2]$ which python
+~/sud/project2/env/bin/python
+
+
+Step7: Installing specific version of requests module in project2
+
+Currently we have project2 virtual environment active. Let us install 'requests' package of specific version '2.18.4' for this project. This will install the request package of specified version and can be seen below.
+
+(env) [admin@fed32 project2]$ pip install requests==2.18.4
+(env) [admin@fed32 project2]$ pip list
+Package    Version   
+---------- ----------
+certifi    2020.4.5.1
+chardet    3.0.4     
+idna       2.6       
+pip        19.3.1    
+requests   2.18.4    
+setuptools 41.6.0    
+urllib3    1.22
+
+pip list will list our all the installed packages in the virtual environment.
+
+Now let us deactivate this virtual environment.
+
+(env) [admin@fed32 project2]$ deactivate 
+
+
+Step8: Installing latest version of requests module in project1
+
+Let us now activate the project1 and install the latest available version of request package for this project.
+
+[admin@fed32 project1]$ source env/bin/activate
+(env) [admin@fed32 project1]$ pip install requests
+(env) [admin@fed32 project1]$ pip list
+Package    Version   
+---------- ----------
+certifi    2020.4.5.1
+chardet    3.0.4     
+idna       2.9       
+pip        19.3.1    
+requests   2.23.0    
+setuptools 41.6.0    
+urllib3    1.25.9  
+
+As you can see requests package with version 2.23.0 is installed now 
+
+Step9 : Project specific version of package has been installed as shown below
+
+As you can see below with the following listing that we have installed specific version of python package as per the application requirement and achieved our goal of isolating the projects using the virutal environment concept
+
+(env) [admin@fed32 site-packages]$ ls -ld /home/admin/sud/project2/env/lib/python3.8/site-packages/requests*
+drwxrwxr-x. 3 admin admin 4096 Jun  3 17:30 /home/admin/sud/project2/env/lib/python3.8/site-packages/requests
+drwxrwxr-x. 2 admin admin 4096 Jun  3 17:30 /home/admin/sud/project2/env/lib/python3.8/site-packages/requests-2.18.4.dist-info
+
+(env) [admin@fed32 site-packages]$ ls -ld /home/admin/sud/project1/env/lib/python3.8/site-packages/requests*
+drwxrwxr-x. 3 admin admin 4096 Jun  3 17:34 /home/admin/sud/project1/env/lib/python3.8/site-packages/requests
+drwxrwxr-x. 2 admin admin 4096 Jun  3 17:34 /home/admin/sud/project1/env/lib/python3.8/site-packages/requests-2.23.0.dist-info
+(env) [admin@fed32 site-packages]$ 
+
+Hope you enjoyed reading this article.
+
+Thank you.

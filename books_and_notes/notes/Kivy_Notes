@@ -1,0 +1,194 @@
+- Kivy is a python framework for developing multitouch applications (i.e natural user interfaces)
+
+- Kivy language helps in seperating the logic from presentation (i.e .kv file contains the presentation)
+
+- App class is the starting point for any Kivy application
+
+- Launching a Kivy application purely based on python without using the kv language is possible.
+
+- Launch a Kivy application by using .kv language
+
+- Widgets are little interface blocks that we use to set up the GUI
+
+- A class rule can contain only instances of Widgets
+
+- Widget properties - self and root variables (i.e these are fixed coordinates)
+    x, y, width, height are the widgets properties
+    fixed positioning properties - pos , x , center_x , right , y , center_y , and top
+
+    root.x
+    root.y
+    self.x
+    self.y
+    root.height
+    root.width
+    self.height
+    self.width
+    root.top
+    root.right
+
+- Layouts
+    Kivy provides a good set of Layouts instead which facilitate the work of organizing widgets
+    Layout is a Widget subclass that implements different strategies to organize embedded widgets
+    Layouts use proportional coordinates rather than the fixed coordinates
+        pos_hint - x , center_x , right , y , center_y , and top
+        size_hint
+
+==========================================================
+Graphics - The Canvas
+==========================================================
+
+- Every Kivy widget contains a canvas object. Canvas object contains the drawing instructions to render the gui of the widget
+
+- The coordinate space is the space where we draw
+
+- Vertex instructions
+    Used to draw basic geometric shapes (straight lines, curve lines, ellipses and polygons)
+
+- Context instructions
+    They represent non graphics elements
+    Matrix manipulations (PushMatrix, PopMatrix, Rotate, Translate, Scale)
+    Color manipulations (Color)
+    Texture binding (BindTexture)    
+
+- A context instruction changes the context of coordinate space and we need to learn to control them
+
+- Any widget contains its own Canvas but all of them share the same coordinate space
+
+- There are two types of instructions that can be added to Canvas instance
+    VertexInstructions
+    ContextInstructions
+
+- Shapes
+
+segments property - define the vertex's required to draw a shape
+    Triangle - require three vertex
+    Rectangle - required four vertex
+    Ellipse - require infinite (but due to computer constraints its set to 180 default which can be increased to get other shapes)
+
+        Rectangle - Requires pos and size properties for representation. Cannot used size_hint or pos_hint
+        Pacman (Ellipse type) - Requires pos, size and angle_start, angel_end, segments
+        Triangle, Quad, Line - Requires points which indicate the corners of the shapes
+        Bezier - Requires points and segments 
+        Mesh - It is a compound of triangles
+
+- To draw polygons coloured inside we should use the respective shapes
+
+- To draw the polygons borders only we should use the lines instead
+
+- We can specify three canvas instances
+        canvas.before
+        canvas
+        canvas.after
+
+
+
+==========================================================
+Widgets Events - Binding Actions
+==========================================================
+
+- Integrate action into GUI components which can be associated with either the Canvas or Widget management
+
+- For the GUI components to interact with each we need to add some attributes to the classes of the project
+
+- id lets us reference other widgets in the kivy language
+
+- Every class can be defined with an variable - 'id' to map the instances to the id value
+    id: _general_options
+    These id's are useful with the kv language code and not within the python code
+
+what is the difference between id and attributes
+
+- Events can be triggered from many spaces
+    - mouse events, finger touches, magic pen touches etc
+
+- Three basic widget events 
+
+    on_touch_down - when new touch starts (i.e initial touch)
+    on_touch_move - when the touch is moved
+    on_touch_up - when the touch ends
+
+    These events allow to add drag capabilities to the widgets
+
+
+
+Rules
+
+- <Label>:
+        Indicates we are modifying the Label class and setting the required properties
+        Modifies all the instances of this class
+
+
+- Button:
+        Indicates an instances of Button class for which properties can be set
+
+- <MyButton@Button>:
+        Extending base class Button with subclass MyButton to create a custom Button and use its instances in the main Widget
+
+========================================================================================================================
+GUI Basics
+========================================================================================================================
+
+- Kivy is a Python framework designed for creating natural user interface (NUI)
+- User interfaces that we interact with using modalities such as touch, gestures, or voice are often referred to as NUI's
+- Kivy languages helps in separating logic from presentation
+- Kivy applications can also be built using pure Python and Kivy as library. This allows to modify interface dynamically
+- The App class is the starting point of any Kivy application
+- The build method of the App class returns the Window content
+- The initial part of the App subclass name should match with the name of the kv file to recognize it
+- The instructions that start with #: in the header of a Kivy file are called directives
+- Rule <ClassName>: defines the class that we want to modify
+- Rule InstanceName: defines the instances that we want to modify
+- Widgets are little interface blocks that we use to set up the GUI
+- Kivy has a list of widgets like buttons, labels, checkbox etc to use
+- Widgets allow for provding fixed value size and coordinates (ie. size and pos)
+- self variable is a reference to the current instance
+- root variabble is a reference to Widget class at the top of the hierarchy
+- x, y, width, height, top and right are the widgets properties
+- Kivy provides a good set of layouts which help in organizing the widgets
+- Kivy Layouts is Widget subclass that implements different stratigies to organize embedded widgets
+- Kivy Layouts allows for using proportional coordinates instead of fixed coordinates (ie. size_hint and pos_hint)
+- size_hint take value in the range of 0 to 1
+- pos_hint is a python dictionary with the following keys (ie. x, center_x, right, y, center_y, top)
+- Widgets can be embedded with other widgets and also with Layouts
+- A widget encapsulates data, defines the user's interaction with that data and draws its visual representation
+- Kivy depends on many python libraries like pygame, gstreamer, PIL, Cairo and etc
+
+pygame - Its a set of python modules designed to write video games. It includes graphics and sound libraries to use in python programming
+gstreamer - Its a framework designed to make it easy to write applications that handle audio or video both. It helps in constructing graphs of media handling components
+pil - Its a library that supports for opening, manipulating and saving many different image file formats
+cairo - Its a 2D graphics library with support for multiple output devices
+
+
+========================================================================================================================
+Graphics - Canvas
+========================================================================================================================
+
+- Every Kivy widget contains a canvas object
+- Canvas object contains all the drwaing instructions that will render the graphical representation of the object
+- The coordinate space refers to the place where we draw
+- Basic geometric shapes can be drawn using the vertex instructions (ie. straight and curve lines, ellipse, polygons)
+- Coloring, Rotating, Translating and Scaling the coordinate space is done using context instructions
+- A context instruction changes the context of the coordinate space
+- There are two types of instructions that we can add to Canvas instances (ie. base classes VertexInstructions and ContextInstructions)
+- The coordinate space context describes the conditions in which the shapes are drawn in the coordinate space
+- Values to specify the properties of the vertex instructions are given in fixed values
+- A Mesh is a compound of triangles and it has many applications in computer graphics and games
+- In order to just draw the border of the polygons we should use the Line
+- Kivy provides three canvas instances canvas.before, canvas, canvas.after
+- Rotate, Translate and Scale classes are the context instructions that are applied to coordinate space and indirectly to the vertex instructions
+
+========================================================================================================================
+Widget Events
+========================================================================================================================
+
+- Actions can be associated with the canvas and with the widget management
+- Attributes allows for different parts of the interface to interact with each other
+- ID lets us reference other widgets in the kivy language
+- Attributes can be used in the Python code and ID's can be used only in the Kivy language
+- Basic widget events correspond to touches on the screen
+
+ 
+
+
+

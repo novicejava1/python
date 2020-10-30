@@ -1,0 +1,34 @@
+======================================================================================
+Cloud Storage
+======================================================================================
+
+- Cloud Storage is a service for storing the objects in Google cloud
+- Object is a immutable piece of data consisting of file of any format
+- Objects are stored in buckets. Buckets are assoicated with projects. Projects can be grouped under organization
+- Tools used to interact with Cloud Storage
+    Google Console
+    gsutil (gcloud include gsutil)
+    Client libraries for managing storage from Applications
+    REST API's (ie. Managing data using JSON and XML API)
+- Cloud Storage uses server-side encryption to encrypt data by default
+- Object retention policy can be enabled and Object versioning
+- Cloud Storage is object storage database for low latency and high durability
+- Data can be configured with Object Lifecycle management OLM for transition to lower cost storage classes
+- Provide multiple redundancy options
+- Storage classes
+    Standard Storage - Accessed frequently. Good for streaming and mobile applications
+    Nearline Storage - Low cost. Good for data storage upto 30 days, eg backups and multimedia content
+    Coldline Storage - Very Low cost. Good for data storage upto 90 days. eg disaster recovery
+    Archive Storage - Lowest Cost, Good for data that can be stored for 365 days, regulatory archives
+- Buckets are the basic containers that hold data in cloud storage
+- Bucket names should be unique as they reside in single Cloud Storage namespace
+- Bucket names can be used in DNS record as part of a CNAME or A redirect
+- Objects stored in a multi region or dual region are geo redundant
+- Storage locations should be selected to balance latency, availability and bandwidht costs for data consumers
+
+- Storage class of existing object can be changed by rewriting the object or using Object lifecycle management
+- Buckets with domain names can be created by Domain Owners
+- Already created buckets cannot be renamed. New buckets needs to be created and backup and restore data into it
+- Bucket object storage class can be changed. For already existing objects this change will not effect
+
+

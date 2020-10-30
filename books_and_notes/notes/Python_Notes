@@ -1,0 +1,257 @@
+===============================================================================
+Python Object Types
+===============================================================================
+
+- Everything in a python script is an object
+- Built-in object types like collections (i.e lists) and search tables (i.e dictionaries) can help solve a lot of problem statements
+- List provide ordered collection of different objects
+- Dictionaries store objects by keys
+- Object types are numbers, strings, lists, dictionaries, tuples, files, sets, booleans, types, functions, modules, classes, complied code
+- Python is dynamically typed language, once you create an object the required operations are automatically bind to that object based on its type
+- Numbers are the basic built-in objects which provide integers, floats, complex, decimal, fraction and a lot of other types of represent numeric quantities
+- Some of the built-in modules for Numbers are math and random
+- Strings are used for storing textual and bytes information
+- Strings are a type of sequence which maintain the positional order of the objects
+- Strings support indexing, slicing, concatenation and repetition
+- + Operations acts differently based on the object its working on. This is polymorphism feature of python
+- Strings are immutable, they cannot be changed once created
+- Every object in python is either immutable or mutable
+- Numbers, Strings, Tuples are immutable
+- Lists, Dictionaries, Sets are mutable
+- bytearray supports in-place changes in text with characters 8 bits wide (i.e ASCII set)
+- Sequence operations are common and will work on most of the sequence objects (i.e strings, list, tuples)
+- Method operations are specific to the object types
+- Strings support advanced substitution operation known as formatting available as expressions and string format method
+- dir() function will list all the available attributes assigned in caller's scope (it includes functional attributes also)
+- help() provides details information regarding the usage of a particular attribute of the object
+- Strings are also used to represent unicode characters and escape characters
+- Pattern based text processing is a advanced stuff handled by module re
+- Python supports advanced text and language processing (i.e xml, html, natural langurage processing)
+- Lists are type of sequence objects which are mutable
+- Python core data types support arbitrary nesting supporting matrixes or multidimensional arrays
+- List comprehension expression is an advanced operation supported by python
+- NumPy and SciPy are more advanced tools which help in processing complex matrixes
+- Lists, Sets, Dictionaries Generators can all be built with comprehensions
+- Dictionaries are mappings, they store objects using key reference
+- Dictionaries are like lists they are mutable and can grow or shrink
+- Iterable objects are the ones that either physically store sequences in memory or an object that generates one item at a time in iteration operation
+- Every python tool that scans an object from left to right uses the iteration protocol
+- range, map and file objects are iterable but they do not store their items in memory, they are generators
+- Performance bottlenecks can be identified using the time and timeit modules and profile modules which is advanced
+- Tuples are sequences but they are immutable
+- Tuples support indexing, slicing, concatenation and more
+- Tuples do not grow and shrink like lists or dictionaries
+- Tuples provide a integrity constraint on the data
+- File objects are main interface to external files on the system
+- File objects provide an iterator that automatically reads file line by line
+- Python struct module provides useful methods for packing and unpacking binary data
+- Type of encoding used by the text data is required to be known
+- Encoding name can be passed to file objects to access and store file contents
+- Python other advanced file like tools are pipes, fifo, sockets, keyed access files, presistent object shelves, descriptor based files, rel and obj oriented database interfaces
+- Sets are neither mappings or nor sequences
+- Sets are unordered collections of unique and immutable objects
+- Classes define a new type of objects
+
+===============================================================================
+Numeric Types
+===============================================================================
+
+- Numeric types is a collections of toolbox like integers, floats, complex. decimal, fraction, boolean, math functions and modules, sets, hex numbers
+- Vectors, libraries, visualization, plotting are some advanced python third party libraries
+- Pythons allows integers to have unlimited precision
+- Floating point numbers are implemented as C doubles in standard Cpython implementation
+- The built-in calls hex(Int), oct(Int), bin(Int) convert integers to its respective representation
+- The built-in int(str, base) convert in reverse
+- We can test the integers if they have fraction or not by using type specific methods
+- Numbers are processed using expressions (combination of numbers and operators)
+- is operator tests object identity (i.e address in memory, a strict form of equality)
+- lambda creates unnamed functions
+- Enclose subexpressions in parenthesis to override python operator precedence rule
+- Numberic types and operators can be mixed in expressions. Mixed types are converted up (i.e type conversion)
+- Python operators may be overloaded by python classes and C extension types
+- Polymorphism means operation depends on the types of objects being operator on
+- Documentation strings attaches the text of the comments to the objects so that they are available after code is loaded
+- Python 3.x performs true division (i.e it retains the fraction part of the result)
+- Results can be formatted using the string formatted expressions or string formatted methods
+- str formats are used by print statements while diplaying the results
+- repr formats are used by echos 
+- str built in the same of string datatype
+- floating point numbers cannot represent some values accurately due to precision limitation. Decimals and Fractions address such limitations
+- Unlimited prcesion are useful in some feilds for calculating the long values
+- Complex numbers are used in science and engineering applications. They use the module cmath.
+- Python integers can be coded in hex, oct, binary notations. These are just alternative synatx which are useful if we need to represent numbers in bytes and bits
+- eval function treats strings like python code and evaluates its result
+- Python bitwise operations come handy when dealing with data from network packets, sockets, serial ports etc
+- bit_length shows the numbers of bits required to represent a number in binary
+- Standard builtin modules are imported from the builtins module in python 3.x
+- random module provides ability to pick a random number from a given range or list. They also provide the shuffle facility
+- random module is useful in games, picking random images, performing statistical simulations
+- decimals are fixed precision floating point values
+- decimals objects are prepared by calling decimal constructor by passing the required numeric string
+- decimals context object allows in specifying precision and rounding modes (i.e decimal.getcontext().prec = 4)
+- decimals are useful for monetary applications
+- Fraction implement rational number objects
+- Fractions do not map as closely as closely to computer hardware as floating point math
+- Fractions and Decimals are used to address the numerical accuracy of floating point numbers
+- Fractions retain the accurarcy of results and simplify the resulted value
+- set is an unordered collection of unique and immutable objects
+- sets have a variety of applications in numeric and database focused work
+- sets act much like keys of valueless dictionary
+- sets support common mathematical set operations with expression operations
+- sets can only contain immutable objects like tuples
+- Tuples in a set might be used to represent dates, records, IP addresses etc
+- Frozensets creates a immutable sets which can be further embedded into other sets
+- sets can be used to filter, find differences, do order netural equality tests, used in dealing with larger datasets
+- sets used in keeping track of where you have already been when traversing a graph or other cyclic structures
+- Boolean values True and False represent 1 and 0. bool data type is a subclass of int
+- numpy provides sophisticated tools for matrix data types, vector processing
+- scipy provides sophisticated tools for mathematics, science and engg domain applicaitons
+
+============================================================================
+Dynamic Typing
+============================================================================
+
+- Dynamic typing the root for Python polymorphism feature. 
+- Python types are determied automatically during runtime
+- The notion of types lives with objects, not names
+- variables and objects are stored in different parts of memory and are associated by links which are called references
+- References are kind of association, implemented as pointers in memory
+- Python internally caches and resuse certain kind of unchangeable objects like 0
+- Python objects have more structure that just enough space to represent their values (i.e Type designator and reference counter)
+- Reference counter is used to determine if an object can be reclaimed or not
+- Objects are garbage collected if there are no references to it
+- Python garbage collection is mainly on reference counter and also has a component that detects and reclaims cyclic reference objects
+- Multiple names referencing the same object is usually called shared reference or shared object in python
+- Python variables never link to other variable, its the objects that it links to and objects can link to other objects
+- Python mutable types are objects and operations that perform in-place object changes
+- Python objects can be copied instead of refernecing
+- Python is operator tests for object equality
+- getrefcount function in the standard sys module returns the object’s reference count.
+- what are weakref in python language
+
+============================================================================
+Strings Fundamental
+============================================================================
+
+- Python string is an ordered collection of characters to store and represent text and byte based information
+- In python 3.x there are three types of strings i.e str, bytes, bytearray
+- Python strings are categorized as immutable sequences
+- backslashes are used to represent special character encoding known as escape sequences
+- Python 3.x defines str strings formally as sequences of unicode code points, not bytes
+- Raw strings suppress escape character. Useful in case like passing the file path to open in Windows
+- Appending letter r just before opening quote of a string, it turns off the escape mechanism (eg. r'C:\temp\folder\')
+- Raw strings are also commonly used for regular expressions (ie text pattern matching)
+- Triple quotes string formats are called block strings
+- Triple quoted strings are useful for embedding mutliline error msgs, html, xml or json code
+- Triple quotes are also used for documentation strings
+- obj.func(arg) means Call method to process object with arguments
+- String methods do not accept patterns. For pattern based text processing we need to use re module of python standard library
+- String formatting allows to perform multiple type specific substitutions on a string in single step
+- String formatting is available in two flavours (ie. String formatting expressions and String formatting methods)
+- % operator in string formatting provides a compact way to code multiple strings substitution all at once
+- String formatting also supports dictionary based formatting values
+- String formatting methods uses the subject string as a template and takes any number of arguments that represents values to be substituted according
+to the template
+- Arguments to functions and methods can be passed by position or keyword name or relative position
+- Immutable object types - numbers, strings, tuples, frozensets
+- Mutable object types - lists, dictionaries, sets, bytearray
+
+===============================================================================
+Modules and Packages
+===============================================================================
+
+- Module is the highest level program organization unit which packages program code and data for reuse. Its a self contained package of variables known as namespaces
+- Modules might also correspond to extensions coded in external languages such as C, Java etc
+- Modules are processed with two statements import and from
+- Modules and Classes are nothing but namespaces
+- Modules provide code resuse, system namespace partitioning, implementing shared services or data
+- Modules are normally imported by other files that wish to use the tools the module define
+- Python checks for modules in table named sys.modules if already present it loads that otherwise compiles and loads it
+- Python uses standard module search path and known file types to locate the module file corresponding to an import statement
+- Python module import do search for module related files, possibly run compilter, and run the python code
+- Python module can be used as a top level code file and also as a tool
+- import sys; sys.path shows the python search path where it looks for the modules and tools to load
+- sys.path.append or sys.path.insert can be used to change the module search path while program execution
+- Python imports are the point of interface to a host of external components such as source code, byte codes, compiled extensions and etc
+- import hooks can be used to load files from archives, performing decryption, zip archive loading and etc
+- distutil tools from standard library are used for third party software distribution
+
+- A directory of python code is called package, such imports are called package imports
+- Package imports turns directory into another python namespaces with attributes corresponding to subdir and module files the directory contains
+- Package initialization run the initialization code in __init__.py when run for the first time which can be used for data file creation, opening db connections etc
+
+- All the Python code lives in a Module. There is a built-in module called __main__
+- Modules should be as independent of global variables used in other modules as possible except for functions and classes
+- Modules should rarely change other module variables
+- Enacapsulation in python is more about packaging than about restricting
+- from module import * will not import any variable that are starting with _ . But still those variable can be accessible
+- assigining string to list __all__ will only import these variables when the module is imported
+- __all__ identifies names to be copied, while _X identifies names not to be copied
+- from __future__ import featurename used to enable an optional extension which is disabled by default in new Python releases
+- Python file can be used both as a Module and run as a standalone program using the builtin attribue called __name__
+- If file need to be run as top level program set __name__ == "__main__"
+- unitest and doctest standard library modules provide advanced testing tools
+- We cant use import statements directly to load a module given its name as a string
+- exec('import ' + modname) allows to run a string of code or direct calls __import__(modname)
+- importlib.import_module(modname) can also be used to load module with name passed as string during runtime
+
+===============================================================================
+Classes and OOPs
+===============================================================================
+
+- Classes are python's main object oriented programming too that support inheritance. Classes are created with a new statement called class
+- Classes are nothing but roughly packages of functions that use and process built-in object types
+- Python Classes are used extensively in GUI API frameworks
+- Classes package logic and data. They define a new namespace like functions and modules
+- Classes are used to instantiate multiple instances of the same class. They allow for customization through inheritance
+- Objects made with classes can be sliced, concatenated, indexed and so on using Operator overloading
+- object.attribute is used to access attributes, call methods
+- object.attribute searches a tree of linked objects looking for the first appearance of attribute that it can find. Its first looks in the leaf subclass then all classes above it, bottom to top and left to right
+- Instance inherits attributes from its class, and a class inherits attributes from all classes above it in the tree
+- Modules have only one instances of it loaded in memory
+- Python passes in the implied instance to a special first argument in the method called self by convention
+- Class methods can be called in either of the two ways
+    object.method()
+    class.method(object)
+- Attributes attached to instances pertain only to those instances but attributes attached to classes are shared by their subclasses and instances
+- Initialization of attributes in class functions is done using the __init__() method. This method is known as the constructor
+- OOPs is about looking up attributes in trees with a special first argument in functions
+- Polymorphism can also be used for encapsulation ie. to hide interface differences
+- In many application domains, we fetch or purchase collections of super classes known as frameworks that implement common programming tasks. 
+- OOPs is mostly about an argument named self and search for attributes in trees of linked objects higher up in the tree
+
+- There are two kinds of objects in Python OOP model : class objects and instance objects
+- Class objects provide default behaviour and serve as factories for instance objects
+- Instance objects are the real objects with its own namespace and names inherited from its super classes
+- Classes support customization by inheritance, operator overloading, and multiple behaviors via methods
+
+- __init__ constructor method, contains code run automatically by Python each time an instance is created and has a special argument called self.
+- Like list and dictionaries, classes serve as a sort of object factory
+- Classes allow for factoring code to remove redundancy and thus optimize maintainability
+- Function decorators and assert statements in Python can help do validation test for code development
+- Operator overloading helps in coding methods in a class that intercept and process built-in operations when run on class instances
+- __init__, __repr__, __str__ and some of the methods that run automatically when instance is initialized or converted to its print string
+- Overriding methods can be done in two ways, Copy the method from Parent to Child class, which is not a good approach
+- The better approach for overriding a method is calling the SuperClass method by passing in the required arguments
+    <superclass>.<method>(self, arguments)
+- instance.method(args...) translates to class.method(instance, args...) automatically in Python
+- Calling through the class directly effectively subverts inheritance and kicks the call higher up the class tree to run a specific version
+- Python introspection tools are special attributes and functions that give access to internals of object implementation
+- instance.__class__ attribute provides a link from instance to class from which it was created. Classess have __name__ attribute and __bases__ sequence that provides access to superclasses
+- object.__dict__ attribute provides a dictionary with one key/value pair for every attribute attached to namespace object
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+

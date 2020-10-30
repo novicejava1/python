@@ -1,0 +1,168 @@
+Purpose - To store Python Objects in a Flat file database using object persistence feature
+
+Pre-requisite - 
+Fedora 31 
+Python 3.7 and later
+
+Python Object Persistence - 
+
+The objects that we create using our Python classes are transient objects which are stored in memory and are not permanent. In order to store our objects permanently and make them available for future usage we need to store them in some kind of storage system. We can achieve this using Python feature called Object Persistence.
+
+Object Persistence can be achieved by using the below standard builtin libraries and modules. Here are those libraries.
+
+Pickle -
+This module helps in serialize the python objects to and from a string of bytes. Objects can be pickled and stored into a file which makes them permanent and persistent. These files can be simply loaded and unpickled later on to re-create the original object.
+
+Dbm -
+This module helps in implementating a filesystem in which we can store our string of bytes and access them by a key
+
+Shelve -
+This module uses the other two modules to store Python Objects on a file by key. Shelve translates an object to its pickled string with pickle and stores that string under a key in a dbm file. Shelve fetches the pickled string by key and re-creates the original object in memory with pickle. Shelves automatically map dictionary operations to objects stored in a file
+
+Procedure -
+
+Step1: Prepare a Basic Personal Class
+
+Here is our basic Personal Class which is used to store personal details and prepare an object for later usage. Here we have created three personal object p1, p2, p3 with their respective details randomly.
+
+[admin@fed31 Classes]$ cat personal.py 
+#!/usr/bin/env python
+
+class Personal:
+
+    def __init__(self, first, middle, sur, age, address):
+        self.firstName = first
+        self.middleName = middle
+        self.surName = sur
+        self.Age = age
+        self.Address = address
+
+    def getfirstName(self):
+        return self.firstName
+
+    def getmiddleName(self):
+        return self.middleName
+    
+    def getsurName(self):
+        return self.surName
+    
+    def getAge(self):
+        return self.Age
+    
+    def getAddress(self):
+        return self.Address
+
+
+Step2: Store the objects into a Flat file named persondb using shelve
+
+Here we are going import our Shelve module and store the objects that we have created into a flat file database called persondb. For this let create a new python file called personaldb.py wherein we create the objects and store them to a flat file database
+
+[admin@fed31 Classes]$ cat personaldb.py 
+#!/usr/bin/env python
+
+import shelve
+from personal import Personal
+
+# Instantiate Person Objects 
+
+p1 = Personal("Mike", "T", "Savii", "24", "Brook Street")
+p2 = Personal("Jerry", "J", "Ros", "34", "Province Street")
+p3 = Personal("Brad", "L", "Lore", "54", "Chench Street")
+
+print(p1.firstName + " " + p1.middleName + " " + p1.surName + " " + p1.Age + " " + p1.Address)
+print(p2.firstName + " " + p2.middleName + " " + p2.surName + " " + p2.Age + " " + p2.Address)
+print(p3.firstName + " " + p3.middleName + " " + p3.surName + " " + p3.Age + " " + p3.Address)
+
+db = shelve.open('persondb')
+
+for obj in (p1, p2, p3):
+    db[obj.firstName] = obj
+
+db.close()
+
+Now, we have pickled our three objects p1, p2, p3 and stored them into our database named persondb.
+
+Step3: Fetch the database objects
+
+Lets, now create another Python script to fetch our database records from the flat file database persondb
+
+[admin@fed31 Classes]$ cat fetchdb.py 
+#!/usr/bin/env python
+
+import shelve
+
+db = shelve.open('persondb')
+
+print("Number of Records : " + str(len(db)))
+print(list(db.keys()))
+
+for key in db:
+    print (key, '=>', db[key].Address)
+
+for key in db:
+    print (key, '=>', db[key]
+
+[admin@fed31 Classes]$ ./fetchdb.py 
+Number of Records : 3
+['Jerry', 'Mike', 'Brad']
+Jerry => Province Street
+Mike => Brook Street
+Brad => Chench Street
+Jerry => <personal.Personal object at 0x7f9dde4c6290>
+Mike => <personal.Personal object at 0x7f9dde4c6290>
+Brad => <personal.Personal object at 0x7f9dde4c6290>
+
+As you can see, we tried to fetch the Address details from each of the record that is present in our database in the first for loop. But if we try to fetch the object instance in second for loop it actually displays the object class name and its address in memory instead of provding the object attributes details.
+
+Lets try to fix this display format in our next step using the operator overloading feature.
+
+Step4: Format the object display format using operator overloading
+
+Operator overloading helps in coding methods in a class that intercept and process built-in operations when run on the class instances. We can use the __repr__ method which runs automatically every time an instance is converted to its print string.
+
+Lets now modify our personal class to overload the __repr__ method to display the objects in the specified format
+
+[admin@fed31 Classes]$ cat personal.py 
+#!/usr/bin/env python
+
+class Personal:
+
+    def __init__(self, first, middle, sur, age, address):
+        self.firstName = first
+        self.middleName = middle
+        self.surName = sur
+        self.Age = age
+        self.Address = address
+
+    def __repr__(self):
+        return '[Person: %s, %s, %s, %s, %s]' % (self.firstName, self.middleName, self.surName, self.Age, self.Address)
+
+    def getfirstName(self):
+        return self.firstName
+
+    def getmiddleName(self):
+        return self.middleName
+    
+    def getsurName(self):
+        return self.surName
+    
+    def getAge(self):
+        return self.Age
+    
+    def getAddress(self):
+        return self.Address
+
+[admin@fed31 Classes]$ ./fetchdb.py 
+Number of Records : 3
+['Jerry', 'Mike', 'Brad']
+Jerry => Province Street
+Mike => Brook Street
+Brad => Chench Street
+Jerry => [Person: Jerry, J, Ros, 34, Province Street]
+Mike => [Person: Mike, T, Savii, 24, Brook Street]
+Brad => [Person: Brad, L, Lore, 54, Chench Street]
+
+Now, as you can see from the output when we try to fetch object details we are able to display all the attributes of the object in the specified format in the __repr__ method.
+
+Hope you enjoyed this article. Thank you for reading.
+

@@ -1,0 +1,119 @@
+Purpose - How to build C++ shared library using Android NDK for different CPU architectures
+
+Pre-requisities -
+Fedora 31
+Android NDK
+
+
+What is Android NDK -
+
+Its a Native Development Kit with a set of tools that allows the use of C/C++ code for Android devices. Android NDK lets us compile the native language code for the right architecture and CPUs based on the variety of Applicaion binary interfaces (i.e ABI's) supported.
+
+
+There are so many programming languages that people use today for developing different kinds of applications. Every language has some features and enhances which ease the development for a specific domain of appliations. For example, we have C and C++ languages which are the most widely used for developing games and gaming engines.
+Java language is very popular for building enterprise grade web and e-commerce appliations. Python is now the new trending language which can be used for developing applications in varous domains. Its currently widely in AI and Machine learning domains. Its also popularly used for developing web based applications using Python web frameworks like Django, Flask, Bottle to name a few.
+ 
+Though we develop application using a specific language their might be a need to use a native language code (i.e C or C++ code) in your application for different reasons. Here are some cases where in we consider integrating our Application with a native language code.
+
+- To use a complex functionality or opertion that runs faster when compiled natively
+- To hide a specific piece of code from getting expolited by compiling the native language code into a library
+- To use already existing native code and use in High level languages without rewrite
+
+In this tutorial, we will see how we can compile a simple C++ code using Android NDK compile for various android devices architectures. Different Android devices uses different CPU's which in turn use different instruction sets. Each combination of CPU and instruction set has its own Appliation Binary interface. Currently Android NDK supports the below ABI's listed.
+
+armeabi-v7a
+arm64-v8a
+x86
+x86_64
+
+Now, that we have a basic understanding about Android NDK and the various Android device architectures at a high level, lets go into building a simple C++ code for these architectures
+
+Procedure -
+
+Make sure you have your Android NDK installed on your machine. Here i will be referring to my Andriod NDK install path which an shell evironment variable "NDK"
+
+Step1: Prepare a simple C++ program as shown below
+
+This is a simple C++ program which is used to return two string values from this native code.
+
+[admin@fed31 arch_build]$ cat strfunc.cpp 
+#include <iostream>
+#include <string>
+
+using namespace std;
+
+char name[] = "Programming";
+char value[] = "CPP";
+
+extern "C" char * getName()
+{
+
+	return name;
+
+}
+
+extern "C" char * getValue()
+{
+
+	return value;
+}
+
+int main()
+{
+	getName();
+	return 0;
+
+}
+
+Step2: Build Shared library for specific architecture
+
+Here we are going to see how we can build a shared library for each of the specfic architecture which we talked above. Also please note, we are taking the minimum Android SDK version to be 21 wherein these libraries would be used.
+
+Build C++ shared library for armeabi-v7a ABI:
+
+[admin@fed31 arch_build1]$ $NDK/toolchains/llvm/prebuilt/linux-x86_64/bin/armv7a-linux-androideabi21-clang++ -fPIC strfunc.cpp -o strfunc_armeabi-v7a.so -shared
+[admin@fed31 arch_build1]$ ls -ltr
+total 20
+-rwxr-xr-x. 1 admin admin  318 Jul 15 16:19 strfunc.cpp
+-rwxrwxr-x. 1 admin admin 6664 Jul 15 16:33 strfunc_armeabi-v7a.so
+
+
+Build C++ shared library for arm64-v8a ABI:
+
+[admin@fed31 arch_build1]$ export NDK=/home/admin/Android/Sdk/ndk/21.3.6528147
+[admin@fed31 arch_build1]$ echo $NDK
+/home/admin/Android/Sdk/ndk/21.3.6528147
+[admin@fed31 arch_build1]$ $NDK/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android21-clang++ -fPIC strfunc.cpp -o strfunc_arm64-v8a.so -shared
+[admin@fed31 arch_build1]$ ls -ltr
+total 12
+-rwxr-xr-x. 1 admin admin  318 Jul 15 16:19 strfunc.cpp
+-rwxrwxr-x. 1 admin admin 7792 Jul 15 16:43 strfunc_arm64-v8a.so
+
+Build C++ shared library for x86 ABI:
+
+[admin@fed31 arch_build1]$ $NDK/toolchains/llvm/prebuilt/linux-x86_64/bin/i686-linux-android21-clang++ -fPIC strfunc.cpp -o strfunc_x86.so -shared
+[admin@fed31 arch_build1]$ ls -ltr
+total 28
+-rwxr-xr-x. 1 admin admin  318 Jul 15 16:19 strfunc.cpp
+-rwxrwxr-x. 1 admin admin 7792 Jul 15 16:27 strfunc_arm64-v8a.so
+-rwxrwxr-x. 1 admin admin 6664 Jul 15 16:33 strfunc_armeabi-v7a.so
+-rwxrwxr-x. 1 admin admin 6568 Jul 15 16:36 strfunc_x86.so
+
+Build C++ shared library for x86_64 ABI:
+
+[admin@fed31 arch_build1]$ $NDK/toolchains/llvm/prebuilt/linux-x86_64/bin/x86_64-linux-android21-clang++ -fPIC strfunc.cpp -o strfunc_x86_64.so -shared
+[admin@fed31 arch_build1]$ ls -ltr
+total 36
+-rwxr-xr-x. 1 admin admin  318 Jul 15 16:19 strfunc.cpp
+-rwxrwxr-x. 1 admin admin 7792 Jul 15 16:27 strfunc_arm64-v8a.so
+-rwxrwxr-x. 1 admin admin 6664 Jul 15 16:33 strfunc_armeabi-v7a.so
+-rwxrwxr-x. 1 admin admin 6568 Jul 15 16:36 strfunc_x86.so
+-rwxrwxr-x. 1 admin admin 7360 Jul 15 16:38 strfunc_x86_64.so
+
+
+
+
+
+
+
+

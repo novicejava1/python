@@ -1,0 +1,41 @@
+1. Install and upgrade the python setuptools
+
+$ python -m pip install --upgrade --user pip setuptools virtualenv
+
+2. Install kivy with examples
+
+$ python -m pip install kivy kivy-examples
+
+3. Validate kivy installation version
+
+>>> import kivy
+>>> print(kivy.__version__)
+1.11.1
+
+4. Create a simplehello.py kivy Application
+
+[admin@feddesk kivy]$ cat simplehello.py 
+#! /usr/bin/env python
+
+import kivy
+kivy.require('1.11.1')
+
+from kivy.app import App
+from kivy.uix.label import Label
+
+class MyApp(App):
+  def build(self):
+    return Label(text='Hello World!!')
+
+if __name__ == '__main__':
+  MyApp().run()
+[admin@feddesk kivy]$ 
+
+
+5. Run the kivy Application
+
+[admin@feddesk kivy]$ ./simplehello.py 
+
+This will launch a simple GUI with HelloWorld!! message
+
+
