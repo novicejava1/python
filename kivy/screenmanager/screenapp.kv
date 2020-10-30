@@ -1,0 +1,43 @@
+#:kivy 1.11.1
+
+<Manager>:
+    canvas:
+        Color:
+            rgba: 1,1,0,1
+        Rectangle:
+            size: self.size
+            pos: self.pos
+            source: 'serenity.jpg'
+    Screen:
+        name: "screen1"
+        BoxLayout:
+            orientation: 'vertical'
+            Label:
+                text: "First Name"
+                bold: True
+            TextInput:
+                id: firstname
+                text: "Enter name"
+            Label:
+                text: "Second Nmae"
+                bold: True
+            TextInput:
+                id: secondname
+                text: "Enter name"
+            Button:
+                text: "Submit"
+                bold: True
+                background_normal: ''
+                background_color: .75,.75, 0,1
+                on_release:
+                    root.current = "screen2" 
+    Screen:
+        name: "screen2"
+        BoxLayout:
+            orientation: 'vertical'
+            Label:
+                text: firstname.text
+                bold: True
+            Label:
+                text: secondname.text
+                bold: True

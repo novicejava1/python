@@ -1,0 +1,26 @@
+import requests
+from ctypes import *
+
+def calculator(firstname, secondname):
+
+
+    test=cdll.LoadLibrary("./strfunc.so")
+    test.getName.restype=c_char_p
+    test.getValue.restype=c_char_p
+
+    name = test.getName().decode("utf-8")
+    value = test.getValue().decode("utf-8")
+
+    
+    url = "https://love-calculator.p.rapidapi.com/getPercentage"
+
+    querystring = {"fname": firstname,"sname": secondname}
+
+    headers = {
+        'x-rapidapi-host': name,
+        'x-rapidapi-key': value
+        }
+
+    response = requests.request("GET", url, headers=headers, params=querystring)
+    jsondata = response.json()
+    return jsondata

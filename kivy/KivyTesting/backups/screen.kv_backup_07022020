@@ -1,0 +1,102 @@
+#:kivy 1.11.1
+#:import hex kivy.utils.get_color_from_hex
+<MyBoxLayout@BoxLayout>:
+  orientation: 'vertical'
+  padding: 100
+  #padding: [50, 0, 50, 0]
+
+<Manager>:
+  result: "msg"
+  percentage: "per"
+  canvas:
+    Color:
+      #rgba: 0, 0, 1, 1    # Green
+      rgba: hex('#9B1B30')
+    Rectangle:
+      pos: self.pos
+      size: self.size
+
+  Screen:
+    name: 'start'
+    MyBoxLayout:
+      GridLayout:
+        cols: 1
+        Label:
+          text: "Relationships are precious. It may be between Family members, Friends, Teachers, Professional Collegues. Please hold them tightly and respect each other."
+          font_size: 32
+          #size: self.texture_size
+          text_size: self.size
+          color: hex('#FFFFFF')
+        Button:
+          text: "Start"
+          color: hex('#FFFFFF')
+          background_color: hex('#926F5B')
+          size_hint: 0.5, 0.2
+          pos_hint: {'center_x':.5, 'y':.2}
+          font_size: 32
+          on_press: app.sm.current = 'first'
+
+  Screen:
+    name: 'first'
+    MyBoxLayout:
+      GridLayout:
+        cols: 1
+        Label:
+          text: "First Name"
+          font_size: 32
+          color: hex('#FFFFFF')
+        TextInput:
+          id: firstname
+          text: ""
+          multiline: False
+          font_size: 32
+        Label:
+          text: "Second Name"
+          color: hex('#FFFFFF')
+          font_size: 32
+        TextInput:
+          id: secondname
+          text: ""
+          multiline: False
+          font_size: 32
+      Button:
+        text: "Submit"
+        color: hex('#FFFFFF')
+        background_color: hex('#926F5B')
+        size_hint: 0.5, 0.2
+        pos_hint: {'center_x':.5, 'y':.2}
+        font_size: 32
+        on_press: root.results()
+        on_release: app.sm.current = 'other'
+
+  Screen:
+    name: 'other'
+    MyBoxLayout:
+      GridLayout:
+        cols: 1
+        Label:
+          text: "Percentage"
+          color: hex('#FFFFFF')
+          font_size: 32
+        Label:
+          id: per
+          text: str(root.percentage)
+          font_size: 32
+          #text: "%"
+        Label:
+          text: "Message"
+          color: hex('#FFFFFF')
+          font_size: 32
+        Label:
+          id: msg
+          font_size: 32
+          text: str(root.result)
+          #text: "msg"
+      Button:
+        text:'Return'
+        color: hex('#FFFFFF')
+        background_color: hex('#926F5B')
+        font_size: 32
+        size_hint: 0.5, 0.2
+        pos_hint: {'center_x':.5, 'y':.2}
+        on_press: app.sm.current = 'first'
