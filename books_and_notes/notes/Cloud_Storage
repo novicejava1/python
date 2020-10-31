@@ -30,5 +30,91 @@ Cloud Storage
 - Buckets with domain names can be created by Domain Owners
 - Already created buckets cannot be renamed. New buckets needs to be created and backup and restore data into it
 - Bucket object storage class can be changed. For already existing objects this change will not effect
+- Project owner is billed for the resource usage. But if the requestor provides a billing project with their request, the requestor project is billed
+- Requester pays should be enabled at the bucket level for requester to be charged for the data retrieval
+- Bucket with requester pays enabled cannot import and export from Cloud SQL
 
+Enable Requester Pays - gsutil requesterpays set on gs://BUCKET_NAME
+Disable Requester Pays - gsutil requesterpays set off gs://BUCKET_NAME
+Check Requester Pay status - gsutil requesterpays get gs://BUCKET_NAME
+Requester Pay request - gsutil -u PROJECT_ID cp gs://BUCKET_NAME/OBJECT_NAME OBJECT_DESTINATION
+Delete a bucket - gsutil rm -r gs://BUCKET_NAME
 
+- We can upload a max MIME type of data upto 5 TB in size
+- We can do upload request in following ways
+	Simple upload		(no object metadata)
+	Multipart upload	(object metadata present)
+	Resumable upload	(For large files also can use streaming transfers)
+	parallel composite upload - file is divided into upto 32 chunks. chunks are uploaded parallely into temp object and recreated from there
+	streaming upload (useful when you dont know the final size of the object and data coming from process and input to process)
+- google-crc32c or crcmod must be available to download the crc32c hash
+- Standard storage class bucket should be used if parallel composite upload needs to be enabled for the buckets
+- Both the JSON API and XML API support uploading object chunks in parallel and recombining them into a single object using the compose operation.
+- Download can be performed in following ways
+	Simple download
+	Streaming download
+	Sliced object download
+
+Upload object - gsutil cp OBJECT_LOCATION gs://DESTINATION_BUCKET_NAME/
+Download object - gsutil cp gs://BUCKET_NAME/OBJECT_NAME SAVE_TO_LOCATION
+Listing objects - gsutil ls -r gs://BUCKET_NAME/**
+Copying objects - gsutil cp gs://SOURCE_BUCKET_NAME/SOURCE_OBJECT_NAME gs://DESTINATION_BUCKET_NAME/NAME_OF_COPY
+Renaning objects - gsutil mv gs://BUCKET_NAME/OLD_OBJECT_NAME gs://BUCKET_NAME/NEW_OBJECT_NAME
+Moving objects - gsutil mv gs://SOURCE_BUCKET_NAME/SOURCE_OBJECT_NAME gs://DESTINATION_BUCKET_NAME/DESTINATION_OBJECT_NAME
+Change storage class of objecct - gsutil rewrite -s STORAGE_CLASS gs://PATH_TO_OBJECT
+
+- Object Versioning retains a noncurrent object version when the live object version gets replaced or deleted.
+- Object versioning is enabled at the bucket level
+- Noncurrent versions are uniquely identified by their generation number
+- generation and metageneration are the two properties that identify the Object version
+
+Enable Object versioning - gsutil versioning set on gs://BUCKET_NAME
+Disable Object versioning - gsutil versioning set off gs://BUCKET_NAME
+Check Object versioning state - gsutil versioning get gs://BUCKET_NAME
+List versioned and current objects - gsutil ls -a gs://BUCKET_NAME
+
+- Data retention policy for cloud storage bucket governs how long objects in the bucket are retained
+- Detailed audit logging mode can be enabled for these immutable storage on Cloud storage. They also help with regulatory and compliance requirements
+- Retention policy applies applies to existing objects in the bucket as well as new objects
+- Retention policy can be locked permanently to a bucket and cannot be remove later
+- Retention expiration time metadata keeps track of the object retention
+- Retention policy and object versioning are mutually exclusive features in Cloud storage. Only one of them can be enabled at a time
+- The maximum retention preiod of 100 years can be set
+
+Set retention policy - gsutil retention set TIME_DURATION gs://BUCKET_NAME
+Remove retention policy - gsutil retention clear gs://BUCKET_NAME
+Lock retention policy - gsutil retention lock gs://BUCKET_NAME
+View bucket retention - gsutil retention get gs://BUCKET_NAME
+
+- Bucket Objects placed on hold cannot be deleted or replaced
+- Object holds are metadata flags that we place on individual objects
+- Cloud storage offers two types of holds
+	Event based holds
+	Temporary holds
+When retention policy are present on the bucket
+- An event based hold resets the objects time in the bucket	(loan documents)
+- A temporary hold does not affect the object time in the bucket (some trade investegating docs)
+
+Enable default event based property - gsutil retention event-default set gs://BUCKET_NAME
+Get default hold status - gsutil ls -L -b gs://BUCKET_NAME
+Disable default event based property - gsutil retention event-default release gs://BUCKET_NAME
+Placing object hold - gsutil retention HOLD_TYPE set gs://BUCKET_NAME/OBJECT_NAME
+Releasing objet hold - gsutil retention HOLD_TYPE release gs://BUCKET_NAME/OBJECT_NAME
+
+- Object lifecycle management help in setting the below
+	Time to live for objects
+	retaining non current versions
+	downgrading storage class for managing costs
+- Object lifecycle management configuraiton can be applied to bucket. This configuration contains a set of rules which apply on bucket objects
+
+Enable lifecycle management using json file - gsutil lifecycle set LIFECYCLE_CONFIG_FILE gs://BUCKET_NAME
+Get lifecycle management - gsutil lifecycle get gs://BUCKET_NAME
+
+- Access control for buckets can be managed using two ways
+	Using IAM (Uniform access control)
+	Using ACL's
+- IAM controls permissioning throughout google cloud and allows to grant permissions at the bucket and project level
+- IAM cannot detect permissions granted by ACL's and vice versa
+- Signed URL's give time limited read/write access to an object through a URL generated
+- Signed policy documents specify what can be uploaded to a bucket
+- Firebase security rules provide granular attribute based access control to mobile and web apps using Firebase SDK for cloud storage
