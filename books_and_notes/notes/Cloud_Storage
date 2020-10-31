@@ -118,3 +118,56 @@ Get lifecycle management - gsutil lifecycle get gs://BUCKET_NAME
 - Signed URL's give time limited read/write access to an object through a URL generated
 - Signed policy documents specify what can be uploaded to a bucket
 - Firebase security rules provide granular attribute based access control to mobile and web apps using Firebase SDK for cloud storage
+
+- Pub/Sub notification sends information about changes to objects in buckets to Pub/Sub topic in the form of message
+- Notification can be sent to any Pub/Sub topic in any project with sufficient permissions. Pub/Sub topic can further send the message to any 
+number of subscribers to the topic
+- Other notification options
+	Cloud Functions - Used to trigger a lightweight stand alone function in response to events and dont want to manage Pub/Sub topics. Cloud function can
+execute Javascript, Python or Go function. Function and bucket should be in same project
+	Object change notification - This is legacy feature of Cloud storage that sends HTTPS message to client applicaiton for Object change notification. Pub/Sub is 
+cheaper and is recommended in its place.
+
+- Notification configuration is a rule we attach to Bucket
+	Topic in Pub/Sub to receive notificaiton
+	Events to trigger notification
+	Info contained within notifications
+- Total 100 notifications can be configured per bucket and 10 notifications for each specific event
+- Event types that can trigger notification are Object Create, Delete, Archive, Data or Metadata update
+- Notification format sent to topic consist of two parts
+	Attributes - key/value pari describing event
+	Payload - A String that contains metadata of the changed object
+- Cloud storage guarantees at least once delivery to Pub/Sub and also Pub/Sub guarantees at least once delivery to recipents
+- Cloud storage deletes the notification after 7 days if it cannot deliver 
+- Enable Pub/Sub API for the Project that will receive notification	
+
+Create notification configuration for bucket - gsutil notification create -t TOPIC_NAME -f json gs://BUCKET_NAME
+Listing notificaiton configuraiton - gsutil notification list gs://BUCKET_NAME
+Delete notification configuration - gsutil notification delete projects/_/buckets/BUCKET_NAME/notificationConfigs/CONFIGURATION_NAME
+
+- We can use Cloud Audit logs to generate logs for API operations performed in Cloud Storage
+- There are two types of logs Admin Activity logs and Data Access logs
+- Cloud Audit logs does not log actions taken by Object Lifecycle management
+
+- Cloud Storage offers usage and storage logs in the form of CSV format that can be downloaded and viewed
+- Usage logs provide information about all of the requests made on a specified bucket and created hourly
+- Storage logs provide information about the storage consumption by bucket
+- Usage logs track changes by Object lifecycle management feature
+- Storage and usage logs can be analysed using Google BigQuery which enables fast SQL like queries against append only tables
+
+- A Project organizes all Google cloud resources. It contains a set of users, a set of API's, billing, authenticaiton and monitoring settings for those API's
+- For each project you use IAM to grant the ability to manage and work on your projects
+- Service accounts allows applications to authenticate and access Google cloud resources and services
+- Service accounts created within project have unique email address that identifies them. Services accounts can be created manually and some created automatically
+by the Google Cloud
+
+- Hash based message authentication code keys can be used to authenticate requests to Cloud Storage
+- HMAC keys are type of credentials that can be associated with service accounts or user accounts in cloud storage
+- HMAC key contain two piece of information
+	Access ID - 24 characters alphanumeric
+	Secret - 40 character base64 encoded
+- HMAC keys are useful when we want to move data between other cloud storage providers and Cloud storage
+
+Create HMAC key - gsutil hmac create SERVICE_ACCOUNT_EMAIL
+Get HMAC key - gsutil hmac get KEY_ACCESS_ID 
+Delete HMAC key - gsutil hmac update -s STATE ACCESS_KEY_ID
