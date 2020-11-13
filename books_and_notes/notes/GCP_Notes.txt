@@ -1,0 +1,662 @@
+IAM
+=======
+
+Who can do what on specific resources
+
+who - Users good account or group or service account 
+what - IAM roles (create, delete, stop, start and changes - permissions are grouped to roles)
+	Primitive	- Owner, Editor, viewer, billing admin
+	Prdefined	- apply to particular gcp services in a project
+	Custom		- list previlige model (Custom roles allow to minimize the roles permissions) - Used project or org level
+
+- Service accounts control server to server interactions
+
+Interacting with GCP
+========================
+
+Console
+SDK		- gcloud, gsutil, bq	(available as a docker image)
+Mobile App
+Rest API	- programmatic access to products and services (Json interaction and Oauth authentication)
+		cloud client library
+		google api library
+
+Cloud marketplace
+==========================
+
+Basically a launcher to launch and project quickly with all the required resources.
+GCP address fixes for the resources used by project but not for the software that is already installed and in use
+
+Google cloud and QwikLabs
+==========================
+
+A way to practice labs on GCP
+
+Google virtual networking	- VPC
+==========================
+
+GCP Storage options
+=======================
+
+structured, unstruc, transaction data
+
+cloud storage - binary large object storage (higlly durable and available)	- Its not a filesystem
+data archival, static content, 
+storeage objects are immutable
+organized into buckets
+offers lifecycle mgment - do versioning so that archiving is happening
+
+cloud storage classes
+
+multi regional - accessed frequently
+regional	- accessed frequently within region
+nearline	- access once in a month
+coldline 	- access once in a year
+
+Transfer appliance - for peta bytes of data
+storage transfer service - batch transfer
+online transfer - self managed
+
+Cloud Bigtable
+==============
+
+Its NoSQL database
+sparsley populated tables
+operational and interactive analytics apps
+access using hbase api
+
+Cloud SQL and managed RDBMS
+===================
+
+mysql and postgresql database
+provide replica services (between multiple zones)
+managed backups
+accessible from other gcp services
+
+Cloud Spanner
+horiszontal sclabalility
+managed instances with HA
+automatic replicatio
+transactional consistency at gloabal scale
+
+Cloud Datastore
+==================
+highle scalable and nosql
+app backends
+
+
+
+
+VPC networks are global
+subnets are regional
+
+- Preemtible vms reduce cost
+- VM can be scaled up or scaled out
+
+VPC route tables used for communciation
+use its firewall to control traffic
+use VPC peering to interconnect networks in GCP projects
+
+Cloud load balancing
+- Software define managed service
+- Use single global cast IP address
+
+LB options
+- Global https
+- Global ssl proxy
+- Global TCP proxy
+- Regional
+- Reginal internal
+
+Cloud DNS
+Cloud CDN - Cache content close to the user
+
+Interconnect options
+
+- secure vpn tunnels
+- direct peering
+- Carreir peering
+- Dedicated interconnect
+
+Google kubernetes engine
+=================================
+- kubernetes engines its like IAAS and PAAS
+- virtualized at hardware level - virtualisation
+- virtualized at OS level - containers
+- scalability of workload and management of the containers
+- deploy, scale and install network LB service
+- Anthos and Istios used for managing multi cloud platform
+- Stackdriver provides logging and monitoring
+
+App Engine
+======================
+- Focus on the code rather than the infra
+- Its PAAS for building scalable apps
+- Standard and flexible env are provided
+- App Engine offers NoSQL databases, in-memory caching, load balancing, health checks, logging, and user authentication to applications running in it.
+- standard
+	provide sdk for development, testing and deployment
+	provides specific version of language java, python, php and go
+- flexible
+	build and deploy containerized apps
+	no sandbox constraints
+	can access app engine resources
+
+============================================================================================================================================================
+Overview of GCP
+============================================================================================================================================================
+
+- Public cloud proivders offers services that fall into following categories
+	Compute resources, Storage, Networking and specialized services such as Machine learning services
+
+Compute Resources
+	- VM's are a basic unit of computing resources
+	- LB services provide service to distribute traffic to the backend VM's
+	- Autoscaler add or remove VM's from cluster based on workload. This is called autoscaling
+	- Autoscaling helps in managing cost and ensure sufficent compute capacity available when load increases
+
+Managed Kubernetes Cluster
+	- These are useful when focus is more on application rather than managing the cluster of servers to keep them up
+	- Managed clusters make sure of Containers
+	- We can specify the numbers of servers to run the containers and specify autoscaling option for each server to manage the number of containers
+	- Health of the containers in managed clusters in monitored automatically and take necessary action
+	- This is suitable for running application based on micro services with containers running different set of services of an application
+	- Cluster management tasks take care of monitoring, networking and some security mgnt tasks
+
+Serverless computing
+	- In this developers and app administrator run their code in a computing environment that does not required setting up VM or kubernetes cluster
+	- There are two options for using this service (ie. App Engine and Cloud Functions)
+	- App Engine is used for applications and containers that run for extended periods of time such as website backend, point of sale system, custom business app
+	- Cloud functions is a platform to run code in response to an event uploading a file and sending message into a queue
+
+Storage
+	- Types of storage services offered by GCP are (ie. Object Storage, File Storage, Block Storage and Caches)
+
+	- Object storage is a system that manages the use of storage in terms of objects and blobs
+	- Objects are grouped into buckets and individually addressable by URL
+	- It is serverless and does not need an VM or attached storage required
+	- GCP Cloud storage is accessible from servers running in GCP and as well other devices with internet access
+
+	- File storage service provides hierarchical storage system for files
+	- GCP has file storage service called Cloud FileStore which is based on NFS storage system
+	- File system storage decouples the file system from specific VM's
+	- It is suitable for applicaiton that require OS like file access to files
+
+	- Block storage uses fixed size data structure called block to organize the data
+	- Its used in ephemeral and persistent disk attached to VM's 
+	- File systems can be installed and applications can run on the block storage directly
+	- Relational DB often write directly to blocks in size of 8KB
+	- Block storage is available on disks that are attached to VM's 
+	- Persistent block storage store data even when they are detached from the VM or VM is shutdown
+	- Ephemeral disk exist and store store data as long as the VM is running
+	- Object storage does not support OS or filesystem level access
+	- Object storage store large volumes of data that are copied to persistent disks when needed
+	
+	- Caches are in memory data stores that maintain fast access to data
+	- The latency of in memory stores is designated to be in sub milli seconds
+	- Caches are helpful to keep read latency to a minimum for the application
+	- Caches are volatile. Data is lost when the machine reboots or shutdowns
+	- Cache data invalidation and keeping the data in cache in sync with the SSD or HDD for system of truth is very critical desigin issue
+
+Networking
+	- Each NW accessible device or service in environment will need an IP address
+	- GCP can have both internal and external addresses
+	- Internal address are accessbile only to servies in internal GCP network
+	- Internal GCP network is defined as VPC
+	- External address are accessible from internet
+	- IP address can be static (which are assigned for extended period of time) and ephemeral (assigned until the lifecyle of the VM)
+	- Firewall rules define which services on which protocol and port are allowed to be accessed from which IP address (maintain source and destination communicaiton rules)
+	- VPC and On premises data centers can communicate using the network peering (ie. distinct network linking)
+
+Specialized Services -
+	- There are some specialized services each cloud service provider provides which can be further used in the applicaiton flow for data processing
+	- AutoML a machine learning service
+	- Cloud Natural language for analyzing text
+	- Cloud vision for analyzing images
+	- Cloud interface API for computing correlation over time - series data
+
+Benefits of Cloud Computing
+	- Renting the resources whenever required and pay for it as per the usage
+	- Provides Pay as you use model
+	- Elastic resource allocation
+	- Cloud providers design the data centers with extensive compute, storage and network resources
+	- Specialized services
+
+============================================================================================================================================================
+Google Cloud computing services
+============================================================================================================================================================
+
+- GCP services can be broadly classified as below
+	Computing resources
+	Storage resources
+	Networking resources
+	Databases resources
+	Identity and access management resources
+	Development tools
+	Management tools
+	Specializied services
+
+Compute resources
+
+- Compute Engine is a IAAS computing resources. App Engine and Cloud Functions are PAAS computing resources.
+- Compute Engine VM's run within a low level service called KVM huypervisour. 
+- KVM is kernel virtual machine which provides virtualization on linux systems on x86 hardware
+
+- Kubernetes engine runs containerized applications on a cluster of servers
+- These containerized applications are monitored, scales and automatically takes corrective action to repair a container
+- Kubernetes engine allows us to describe the compute, storage and memory resources that are required to run the services
+
+- App Engine provides serverless application environment where the concentration is more on the code development
+- App Engine manages the underlying compute and network resources. Sutiable for web and mobile applications
+- Standard Environment allows to run application in language specific sandbox. Its suitable for applications that do not require other third party compiled software
+- Flexible environment is suitable for applications with other third party libraries. It gives the ability to work with background processes and write to local disk
+
+- Cloud Functions are suited for event driven processing
+- They help in execution short code functions when some event occurs (code may run a short progrma and initiate a long running app on other compute engine resources)
+
+Storage resources
+
+- GCP has several storage resources for storing objects and files
+- Cloud storage is a object storage systems. Its not a filesystem. Objects are accessible using a URL
+- GCP Users and applications can be granted permission to read and write objects to buckets. IAM roles can be used to provide the required permissions
+- Cloud storage is useful to store objects that are treated as single units of data
+- Objects can be stored at regional level and multi region level for high availablility, durability and low latency
+- There are different storage classes available for each applicaitons storage needs
+- Nearline storage is good for infrequent access of data and costs less than regional or multi regional
+- Coldline storage is low cost archival storage designed for high durability and infrequent access. Suitable for data that is accessible once in an year
+- Object lifecycle policies can be applied to buckets to manage the objects in buckets
+
+- Persistent disk are storage service that are attached VM's, kubernetes engine
+- They provide block storage on SSD and HDD disks. SDD is costlier than HDD
+- Disks can be resized while in use without the need to restart the VM's
+- Persistent disks can be up to 64TB in size using either SSDs or HDDs.
+
+- Cloud storage for Firebase is used for mobile applications
+- It provides secure transmission as well as robust recovery mechanism to handle problematic network quality
+
+- Cloud Filestore provides access to filesystem hosted on network attached storage
+- Filestore can provide high IOPS as well as variable storage capacity
+- These are used to store coarse-grained objects like files
+
+Database resources
+
+- GCP provides two types database options - RDMS and NoSQL databases
+- Some are serverless and others require users to manage clusters of servers
+- Some provide support for atomic transactions and other less stringent on consistency and transaction requirements
+
+- Cloud SQL is GCP's managed relation database service. Its supports both MySQL and PostgreSQL databases on VM's
+- Database administration tasks are automated like backup and patching
+- Upto 10TB of database storage is supported in both 2nd generation databases
+- These database services support replication, automatic failover and HA
+- This serivce is useful for applications with relatively consistent data structure requirement like bank application
+
+- Cloud Bigtable is designed for petabyte scale applications that can supports millions of rows and thousands of columns
+- Its based on NoSQL model also known as wide column data model
+- Its suitable for applications with low latency in read/write operations supporting millions of operations / sec
+- Its integrates with GCP services like Cloud storage, pub/sub, dataproc, dataflow and Hbase API support for data processing, graphs and analysis
+
+- Cloud spanner is an enterprise grade distributed RDMS and NoSQL databases features. Its supports applications that demand scalable and HA RDMS
+- Cloud spanner also has enterprise grade security with encryption at rest and transit along with identity based access controls
+- Cloud spanner supports ANSI 2011 standard SQL
+
+- Cloud Datastore is NoSQL document database
+- It uses the concept of a document or collection of key-value pairs as basic building block
+- Its useful for applications which must accomodate a range of attributes some of which may not be know at design time
+- This database scale automatically based on load and also shard or partition data as needed to maintain performance
+- We can access this database using REST API in compute resources
+- It supports transactions, indexes, and SQL like queries
+- Its suitable for high scalable and structured data and do not always need strong consistency when reading data
+
+- Cloud Memorystore is a managed redis service for caching frequently used data in memory
+- Cloud Memorystore is designed to provide sub milli seconds access to data
+- Admin tasks are managed by GCP like failover, patching, HA	
+
+- Cloud Firestore is NoSQL managed database service used as backend for highly scalable web and mobile applications
+- It provides client libraries that provide offline support, synchronization, and manage data across mobile devices, IoT devices, and backend data stores
+- Cloud Firebase includes datastor mode, which allows apps written for datastore to work with cloud firebase as well
+- Cloud firestore provides realtime data sync and offline support
+
+Networking resources
+
+- VPC can span globally without public internet
+- GCP networking services allow virtual networks, link on prem networks, optimum content delivery and network security
+- Each enterprise organization can logically isoldate its cloud resources by creating VPC
+- Backend servers can access google services such as machine learning, IoT without creating public IP address for backend servers
+- VPC's in GCP can be linked to on prem VPN using IPSec
+- Firewalls can be used to restrict access to resources on VPC as well
+
+- Cloud LB distributes workloads across cloud infrastructure
+- Cloud LB can distribute workload within and across regions, adapt to failed and degraded servers, autoscale compute resources to accomodate workload
+- It also supports internal load balancing
+- Its a software service that can load balance HTTP, HTTPS, TCP/SSL, UDP traffic
+
+- Cloud Armor is a google network security service that builds on Global https LB service
+- It restricts access based on IP address and provides security againts SQL injection and cross site scripting attack
+- Restrict access based on geolocation of incoming traffic
+- Allows to define rules at network and application layer
+
+- Cloud CDN content delivery network allows users globally to access content from systems distributed in various regions
+- Its enables low latency response to those requests by caching contents on set of endpoints across globe (90 CDN endpoints are there)
+- For static content applications like news websites this is a good option to use
+
+- Cloud interconnect supports to connect on prem network with google cloud network
+- There are two types of connections provided - interconnect and peering
+- direct or peered Interconnect uses a dedicated network connection between on prem and google cloud network
+- Organization that cannot afford dedicated networks can use VPN services that enable traffic between datacenters and google facilities using public intenet
+
+- Cloud DNS is a HA, low latency service for mapping domain names with IP address
+- Cloud DNS supports auto scaling to support millions of addresses 
+- It also provides private zones to creaet custom names for VM's
+
+- Identity and access management enables customers to define fine grained access controls on resources in cloud
+- IAM uses the concepts of users, roles and privileges
+- Group of related permissions are bundled into roles. Roles are set of permissions that can be assigned to an identity
+
+- Cloud SDK is the cli tool for managing almost all the GCP resources VM's, network, storage, firewalls etc
+- Cloud SDK has client libraries for java, python, go etc
+
+- Management tools are for DevOps team to ensure reliable, available and scalable application
+- Stackdriver is a service to collect metrics, logs and event from applications and and infra. This data is used for monitoring, assessing and diagnose problems
+- Monitoring extends the capabilities of Stackdriver by collecting performance data from resources
+- Logging enables to store and analyze and alert on log data
+- Error reporting aggregates crash information to display in centralized interface
+- Trace for capturing latency data
+- Debugger for inspecting the execution code
+- Profiler for collecting CPU and Memory utilization
+
+- GCP provides special services like APIs, data analytics, and machine learning
+- Apigee API is a management service for providing API access to applications
+
+- Bigquery for analyzing petabytes of data for data warehousing
+- Cloud dataflow for batch and stream processing pipelines
+- Cloud dataproc is a managed hadoop and spark service
+- Cloud dataprep allows to explore and prepare data for analysis
+
+- Cloud AutoML for building machine learning modes 
+- Cloud ML Engine for building scalable ML systems for prod
+- Cloud NLP  for analysing human languages and extract information from text
+- Cloud Vision for image processing, extracting text and filtering connect, annotating images with metadata
+
+============================================================================================================================================================
+Google Cloud computing services
+============================================================================================================================================================
+
+- All the GCP resources are organized and linked to billing system
+- GCP organizational hierarchy consists of organizations, folders, and projects
+- GCP provides a way to group resources and manage them as a single unit. This is called resource hierarchy
+- The access to resources in resource hierarchy is controlled by a set of policies that you can define
+- Organization is the root level resource hierarchy corresponding to an organization or company
+- Organization can be created in two ways
+	Already existing G suite customers can create organization in GCP
+	Google Identity as a service can be used to create organization
+- Cloud identity have super admins, and those super admins assign IAM role to users who manage the organization
+- GCP will automatically grant project creator and billing account creator IAM roles to all users in the domain
+- Users with Org Admin IAM role are responsible for below
+	Define structure of resource hierarchy
+	Define IAM policies over the resource hierarchy
+	Delegating other management roles to other users
+- When a billing account or project is created GCP will automatically create an organization  resource
+
+- Folders are building blocks of multilayer org hierarchy. Folders can contain other folders and projects
+- Folders help in segregating departments and their corresponding roles
+
+- Project is the important part of the org hierarchy. This is where all the GCP resources created, GCP services used, manage permissions and manage billing options
+- resourcemanager.projects.create IAM permission can create a project
+
+- GCP organization policy service controls access to an organizaiton resources. The organization policy service complements the IAM service
+- IAM service lets you assign permissions so users or roles can perform specific operations in the cloud
+- Org policy service lets to specify limists on the ways resources can be used
+- Org policy are defined in terms of constraints on a resource
+- Constraints are restrictions on services. GCP has two types of constraints list constraints and boolean constraints
+- Policies are inherited and cannot be disabled or overridden by objects lower in the hierarchy
+- Multiple policies can be in effect for folder or project
+
+- Role is a collection of permissions. Roles are granted to users by binding user to a role
+- Thre are three types of roles in GCP
+	Primitive roles includes Owner, Editor, Viewer
+	Predefined roles (Recommended for fine grained access control - principle of least privilege)
+	Custom roles
+- Permissions cannot be assigned to users, they can be assigned only to roles
+- Roles are assigned to users
+
+- Identities are usually associated with individual users.
+- Applications can be provided the required roles so they can perform opertions on behalf of users
+- Service accounts can be created and assigned to applications so they can perform the required operations like connecting to db
+- There are two types of service accounts 
+	user managed service accounts
+	google managed service accounts
+- Google managed service accounts are used by various GCP services internally
+- Service accounts can be managed as a group of accounts at the project level or at the individual service account level
+- Service accounts are created automatically when resources created. But they can also be created manually using IAM for application purpose
+
+- GCP Billing API provides a way to manage how we pay for resources used
+- Billing accounts store information about to pay charges for resources used
+- Billing account is associated with one or more projects
+- There are two types of billing accounts
+	Selfserve - pay using credit / debit card automatically
+	invoiced - Invoices are sent to customers usually used by large org
+- Billing Roles
+	Billing account creator		- used to create accounts
+	Billing account administrator	- used to manage existing accounts
+	Billing account user		- used to link projects
+	Billing account viewer		- used to view bills and transactions
+- Billing service allows to set the budget and billing alerts for a billing account
+- Billing data can be exported to either a Bigquery database or Cloud storage file for analysis and compliance reasons
+- Billing data exported to cloud storage file can be saved in JSON or CSV file format
+
+- GCP uses API's to make services programmatically accessbile
+- All GCP services have API associated with them
+
+- Stackdriver is a set of services for monitoring, logging, tracing and debugging applications and resources
+- For monitoring and logging data to be saved into stackdriver you need to create workspace to save it
+
+============================================================================================================================================================
+Introduction to Computing in GCP
+============================================================================================================================================================
+
+- Compute engine is a serivce that provide VM's that run in GCP
+- Instances run images which contain OS, libraries and other code
+- Snapshots can be created from boot disk which can be further used as image for other VM's
+- Custom images from on prem data centers can be imported using the virtual disk import tool provided by google
+- Virtual machines are contained in projects
+- Virtual machines run in a zone and region
+- Zones are data center like resources that are closed coupled. Zones are located within regions
+- Zones within a region are linked by low-latency, high bandwidth network connections
+- Users need privileges to create vm
+- Users or identities are assigned a role which provides a set of permissions on a particular resource
+	Compute engine admin - Full control
+	Compute engine network admin - Full control on networking resources
+	Compute engine security admin - Full control on Firewall and SSL management
+	Compute engine viewer - list the resources
+- IAM policies can be used to grant permissions directly to resources
+- Preemptive VM's are suitable for machines which are fault tolerant applications like big data analysis, rendering apps. They persist for upto 24 hours.
+- Preemptive VM's if terminated within 10 min are not charged
+- These machines cannot be migrated to regular VM and cannot be set to auto restart
+- VM's can be grouped called instance groups. It helps in manage similar vm's as a single unit
+
+- App Engine is a PaaS service that provides managed platform for running applications
+- App Engine users concentrate mode on code and there is less to manage on the resources and less control on the resources that are used to execute the app
+- Applications in App Engine are created within a project
+- App Engine applications have common structure they consist of services and services can have multiple versions that can run on instances
+- Each version of service runs on a instanced managed by App Engine
+- App Engine provides autoscaling based on the demand by creating dynamic instances
+- App Engine provides resident instances that run continually
+- GCP allows to set daily spending limit and create budgets for a specific project to spend
+
+- App Engine provides two types of runtime environment Standard and Flexible
+- App Engine standard environment consists of a preconfigured language specific runtime
+- App Engine Flexible environment provides more options and control to developers on the PaaS environment
+- App Engine Flexible environment uses containers as the basic building block
+- App Engine Flexible environment is good options if we can package our application into small set of containers. These containers can then be autoscaled based on load
+- App Engine is fully managed PaaS. Health of App Engine servers is monitored by Google
+- In case on Kubernetes Engine, the clusters need to be monitored using the tools such as Stackdriver for monitoring and autoscaling 
+- App Engine standard environment scales down to no running instances if there is no load, but this is not the case with the fl exible environment.
+- App Engine standard environment is suitable for applications written in one of the supported languages
+- App Engine is one of the serverless option
+
+- Kubernetes engine can be used in applications which divided into various services but need to be managed as single resource
+- Kubernetes engine is GCP managed Kubernetes service
+	Create cluster of VM's
+	Deploy containerized apps to cluster
+	Administer the cluster
+	Specify policies like autoscaling and resource management
+	Montior cluster health
+- Kubernetes is designed to support clusters that run a variety of applications
+- Kubernetes cluster consist of master and worked nodes
+- Master node manages the cluster services like API server, controller, schedulers.
+- Master determines what containers and workloads run on each node
+- Kubernetes deploys containers in groups called pods. Containers within a single pod share storage and network resources
+- Contianers within a pod share an IP address and port space
+- Kubernetes supports something called eviction policies that set thresholds for resources
+- Kubernetes shutsdown pods that become starved for resources
+- A group of running identical pods is called a deployment. The identical pods are called replicas
+- Kubernetes deployment can be in three states
+	Progressing, Completed or Failed
+- Kubernetes is good choice for large scale applications that required HA and High reliability
+
+- Cloud Functions is a serverless computing platform designed to run single piece of code in response to events in GCP environments
+- Cloud Functions provides a glue between services that are otherwise independent
+- GCP manages everything needed to execute Cloud functions code in a secure and isolated environment
+- Cloud functions may be running in multiple instances at one time
+- Cloud functions are suitable for event based processing applications like IoT, asyn workflows and mobile applications
+
+============================================================================================================================================================
+Computing with Compute Engine Virtual Machines
+============================================================================================================================================================
+
+- Compute engine VM can be created using three ways
+	Google cloud console
+	Google cloud sdk
+	Google cloud shell
+
+- Management, Security, Disks and Networking and Sole Tenancy are other details that can further be edited while creating the VM
+- Management tab helps in describing and adding key value pair labels to the VM. These are helpful when the infra is expanding to manage
+- You can add startup script and shutdown script to run respectively once the VM is started and before its stopped to do clean up
+- The meta data values are stored in metadata server and are available for querying using the Compute engine API
+- In Security tab we can specify if we want to use shielded vms and secure ssh keys
+- Sheilded VM's are configured with additional security mechanisms
+	Secure boot - Digitally signed OS are allowed to boot
+	Virtual trusted platform module vTPM - TPM is a specialized computer chip designed to protect security resources, like keys are certs
+	Integrity monitoring - uses to know good baseline of boot measurements
+- By default Google manages the encryption keys for the boot disk
+- GCP supports the concept of project wide ssh keys which gives users project wide access to VM's
+- Using existing disk in read only mode is good way of replicating reference data across multiple instances
+- In networking setting we can add multiple network interfaces
+- If we need to ensure that VM's run on server only with other Vm's then we can specify sole tenancy
+
+- The gcloud command is organized into a hierarchy of groups
+	gcloud compute instances create
+- VM's can also be created using the cloud shell
+
+============================================================================================================================================================
+Managing Virtual Machines
+============================================================================================================================================================
+
+- A group of VM's that run the same configuraiton are called instance groups
+- The content of memory is lost when the VM is restarted. If data needs to be preserved you need to store in persistent disk or cloud storage
+- GPU are used for math intensive applications such as visualization and machine learning
+- To add a GPU to an instance, you must start an instance in which GPU libraries are installed or will be installed
+- We also need to make sure that the instance runs in a zone that has GPU available
+- GPU cannot be attached to shared memory libraries
+- When a GPU is added to a VM we must set the instance to terminate during maintenance
+
+- Snapshots are copies of data on persistent disk
+- Its is always recommended to Flush the disk before we take snapshot of it. The first snapshot of the disk is full backup and other snapshots are incremental only
+- To work with snapshots the user must have Compute Storage Admin role
+
+- Images are similar to snapshots in that they are copies of disk contents
+- Images are used to create VM's. Snapshots are used to make data available on a disk
+- Images can be created from 
+	Disk
+	Snapshots
+	Cloud storage file
+	Another image
+- You can delete and deprecate only custom images, not GCP-supplied images.
+- Google’s deprecated images are available for use but may not be patched for security flaws or other updates.
+- Management of VM instances and images can be done using Cloud shell and also Cloud SDK
+
+- Instance groups are a set of VM's that are managed as a single entity
+- gcloud command applied to an insatance group is applied to all members of the instance group
+- There are two types of instance groups - managed and unmanaged
+	Managed group - identical configuration, auto scaling, auto healing, creating using instance template
+	Unmanaged group - not identical and having different configuration
+- Instance groups are created from Instance group templates
+- Instance groups can contain instances in a single zone or across region
+- Regional managed instance groups are recommended because they spread workload across zones and increase resiliency
+- Use managed instance groups to enable autoscaling and load balancing.
+
+============================================================================================================================================================
+Computing with Kubernetes
+============================================================================================================================================================
+
+- Kubernetes engine is GCP managed Kubernetes service
+- Kubernetes runs containers on a cluster of virtual machines
+- Kubernetes does the following which are called container orchestration tasks
+	identifies where to run the container
+	montior the health of container
+	manage full lifecycle of the VM instances
+- Kubernetes cluster consist of master and nodes
+- The cluster master manages services provided by kubernetes such as API, Controller, Scheduler
+- User can interact with cluster using the kubectl command
+- The nodes run an agent called kubelet which is the service that communicates with the cluster master
+- Some memory and cpu is reserved for kubernetes and so is not available to applications running on the nodes
+- There are several organizing objects that make up the core functionality of how kubernetes process workloads
+- Kubernetes objects - Workloads are distributed across nodes in a kubernetes cluster. Each of the below object contributes to logical organizing of workloads
+	Pods
+	Services
+	Volumes
+	Namespaces
+- Pods are single instances of running process in cluster. There can be atleast container or multiple containers in a pod for an applicaiton
+- Replicas are copies of pods and constitute a group of pods that are managed as a unit
+- Pods are ephemeral, they are expected to termiate
+- The mechanism that manages scaling and health of cluster is known as controller
+- Service is an object that provides API endpoints with a stable IP address that allows applications to discover pods running a particular application
+- Replicaset is a controller used by deployment that ensures that correct number of identical pods are running
+- Deployments are set of identical pods. A pod template is a definition of how to run a pod
+- StatefulSets are like deployments but they are assigned a unique identifier to pods. This enables kubernetes to track which pod is used by which client and keep 
+them together
+- StatefulSets are used when an application needs a unique network identifier or stable persistent storage.
+- Jobs create pods and run them until the application completes a workload.
+
+- Kubernetes cluster can deployed using console, cloud sdk or CLI
+- To use kubernetes engine first we need to enable the kubernetes engine API
+- Credentials need to be created when we use Kubernetes engine for the first time
+- There are different types of clusters that can be created based on the application requirement
+- Node pools are instance groups in kubernetes cluster
+- Kubernetes runs a number of workloads to manage the cluster
+
+- The basic command for working with kubernetes engine is the following gcloud command
+	gcloud beta container
+- Deployment yaml file can be further used for creating other deployments
+- To work with kubernetes cluster using command line we will need cloud SDK and kubernetes cli tools kubectl
+	gcloud components install kubectl
+- Stackdriver can be used to monitor the kubernetes cluster
+- Stackdriver workspaces are resources for monitoring and can support upto 100 monitored projects
+- Workspace contains dashboards, alerting policies, group definitions and notification checks
+
+
+
+
+
+
+
+
+
+
+	
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
