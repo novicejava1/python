@@ -572,7 +572,7 @@ Managing Virtual Machines
 	Cloud storage file
 	Another image
 - You can delete and deprecate only custom images, not GCP-supplied images.
-- Google’s deprecated images are available for use but may not be patched for security flaws or other updates.
+- Googleâ€™s deprecated images are available for use but may not be patched for security flaws or other updates.
 - Management of VM instances and images can be done using Cloud shell and also Cloud SDK
 
 - Instance groups are a set of VM's that are managed as a single entity
@@ -634,29 +634,177 @@ them together
 - Stackdriver workspaces are resources for monitoring and can support upto 100 monitored projects
 - Workspace contains dashboards, alerting policies, group definitions and notification checks
 
+============================================================================================================================================================
+Managing Kubernetes Cluster
+============================================================================================================================================================
 
+- The first part of the cluster details page describes configuration of the cluster
+- Using cloud console we can check the cluster details and further the nodes, pods and container details within it
+- List the cluster using cli
+	gcloud container cluster list
+- You need to ensure you have a properly configured kubeconfig file, which contains information on how to communicate with the cluster API
+	gcloud container clusters get-credentials --zone us-central1-a standard-cluster-1
+- Once the kubeconfig file is configured we can communicate with the cluster using the kubectl
+	kubectl get nodes
+	kubectl get pods
+- The command to add or modify nodes is gcloud container clusters resize.
+- Autoscaling can be enabled for kubernetes cluster by setting the min and max number of nodes 
+	gcloud container clusters update
+- A deployment includes a configuration parameter called replicas, which are the number of pods running the application specified in the deployment.
+- Working with pods using kubectl
+	kubectl get deployments
+	kubectl scale deployment nginx-1 --replicas 5
+	kubectl autoscale deployment nginx-1 --max 10 --min 1 --cpu-percent 80
+	kubectl delete deployment nginx-1
 
+- Services need to be exposed to be accessible to resources outside the cluster. This can be set using the expose command,
+	kubectl expose deployment hello-server --type="LoadBalancer"
 
+- Container Registry is a GCP service for storing container images.
+- Container image list
+	gcloud container images list
 
+============================================================================================================================================================
+Computing with App Engine
+============================================================================================================================================================
 
+- App Engine standard applicaiton consist of four components
+	Application
+	Service
+	Version
+	Instance
+- Services are typically structured to perform a single function with complex applications made up of multiple services, known as microservices.
+- An App Engine application is a high level resource created in project
+- Apps must have atleast one service and a service can have multiple versions. Each version executes in a separate instance
+- Advantage of keeping multiple versions is that they allow to migrate and split traffic
+- Configure gcloud to work with App Engine Python applications
+	gcloud components install app-engine-python
+- The important file in app enginle application is the app.yaml file
+- To deploy an application into app engine
+	gcloud app deploy app.yml
+- We can stop a specific version of app engine app instance as below
+	gcloud app versions stop v1 v2
+- Instances are created to execute an application on an App Engine managed server.
+- App engine scales the instances based on the load and its called dynamic scaling with optimized cost
+- Resident instance are ones that are running continuously
+- app.yaml needs to be configured with required key-value pairs for the automatic_scaling
+- We can also use basic scaling which takes idle_timeout and max_instances parameter
+- We can use these three types of scaling
+	automatic_scaling
+	basic_scaling
+	manual_scaling
+- If you have more than one version of an application running, you can split traffic between the versions.
+- There are three was app engine traffic can be split
+	IP address
+	HTTP cookie
+	Random selection
+- Random selection is useful to evenly distribute traffic
+- HTTP cookie splitting helps in routing traffic to same version
+- Traffic splitting for a service
+	gcloud app services set-traffic serv1 --splits v1=.4,v2=.6
 
+============================================================================================================================================================
+Computing with Cloud Functions
+============================================================================================================================================================
 
+- Cloud function is similar to App Engine in that both are serverless
+- App engine supports multiple services organized into a single application
+- Cloud function supports individual services that are managed and operated independently of other services
+- By default cloud functions timeout after one minute but can be set as long as 9 min
+- Most imports terms to know in cloud functions
+	Events
+	Triggers
+	Functions
+- Events are some type of actions that happen in GCP
+- GCP supports events in five categories
+	Cloud storage
+	Cloud pub/sub
+	HTTP
+	Firebase
+	Stackdriver logging
+- For each of the cloud functions-enabled events that can occur you can define a trigger. A trigger is a way to respond to event
+- Trigger have an associated functions.
+- Functions run in their own environment invoking a separate instance
+- Cloud functions API need to be enabled to create a new function
+- A function can be executed each time a message is written to a pub sub topic
+- Messages in pub/sub are encoded to allow for binary data in place where text data is expected
+- Deploying a function using the gcloud
+	gcloud functions deploy pub_sub_function_test --runtime python37 --trigger-topic gcp-ace-exam-test-topic
+- Deleting a function uinsg the gcloud
+	gcloud functions delete pub_sub_function_test
 
+============================================================================================================================================================
+Planning Storage in the Cloud
+============================================================================================================================================================
 
-	
+- Choosing between storage options solutions based on below parameter
+	Time to access data
+	data model
+	Other features like consistency, availability and support for transactions
+- GCP has several storage options
+	Managed redis cache server
+	Persistent disk storage use with VM
+	Object storage for shared access
+	Archival storage options
+- Memorystore provides low latency and no durability of the data. The cache can be to 1 to 300 GB 
+- Memorystore is a protocol compatible with redis
+- Memorystore creates instances that run redis
+- Memorystore can be configured with HA by creating failover replicas
+- Memorystore caches can be used with applications running compute engine, App engine, and kubernetes engine
 
+- Persistent storage provide durable block storage and it can be used to create filesystem
+- Persistent disks exist independently of VM and local SSD do not
+- SSD have high throughput and consistent performance for random access and sequential access patterns
+- HDD have longer latency but low cost
+- Persistent disks automatically encrypt data on the disk. They can be resized while attached to the VM
 
+- Object storage used to store large volumes of data like exabytes and share it widely
+- Cloud storage cannot overwrite a section of a file. they do not support concurrency and locking
+- Cloud Storage Fuse, which provides a way to mount a bucket as a filesystem on Linux and Mac OS
+- It is important to remember that object storage does not provide a file system.
+- Cloud Storage provides four different classes of object storage: mult-regional, regional, nearline, and coldline.
+- Both regional and multiregional storage are used for frequently used data.
+- If your data is in multiregional locations, then it is georedundant.
+- For infrequently accessed data, the nearline and coldline storage classes are good options.
+- Versioning and Object lifecycle management can be enabled for buckets
 
+- There are three broad categories of data models in GCP
+	Object		- Cloud Storage
+	Relational	- Cloud SQL, Cloud Spanner, Cloud BigQuery
+	NoSQL		- Cloud datastore, Cloud firestore, Cloud Bigtable 
+	Cloud Firestore and Cloud Firebase (mobile optimized NSQL)
 
+- Relational databases support frequent queries and updates to data. They are used when it is important for users to have a consistent view of data. Provide consistent
+data
+- NoSQL provide inconsistent data
+- Relational datbases support database transactions. Transactions is a set of operations that is guranteed to success or fail in entirety
+- Cloud SQL and Cloud Spanner are used when data is structured and modeled for relational databases.
+- Cloud SQL is used for databases that do not need to scale  horizontally, that is, by adding additional servers to a cluster. Cloud SQL databases
+scale vertically, that is, by running on servers with more memory and more CPU.
+- Cloud Spanner is used when you have extremely large volumes of relational data or data that needs to be globally distributed while ensuring consistency and transaction integrity
+across all servers.
+- BigQuery is a service designed for a data warehouse and analytic applications. BigQuery is designed to store petabytes of data.
+- Cloud Spanner is significantly more expensive than Cloud SQL or other database options.
+- BigQuery is a managed analytics service, which provides storage plus query, statistical, and machine learning analysis tools.
+- The first task for using BigQuery is to create a data set to hold data.
 
+- NoSQL databases do not use the relational model and do not require a fixed structure or schema. developers have the option to store different attributes in different
+records.
+- GCP supports three nosql options
+	Cloud datastore
+	Cloud firestore
+	Cloud bigtable
 
+- Datastore is a document database model
+- Datastore is a managed database, automatically partitions data and scales up or down as demand warrants.
+- Datastore is used for nonanalytic, nonrelational storage needs.
 
-
-
-
-
-
-
-
+- Cloud Firestore is a managed NoSQL database that uses the document data model.
+- One advantage of Cloud Firestore is that it is designed for storing, synchronizing, and querying data across distributed applications, like mobile apps.
+- Cloud Firestore supports transactions and provides multiregional replication.
+- Bigtable is another NoSQL database, but unlike Datastore, it is a wide-column database, not a document database.
+- Wide-column databases, as the name implies, store tables that can have a large number of columns. Not
+- Bigtable is designed for petabyte-scale databases. IOT, data science applications
+- This database is designed to provide consistent, low-millisecond latency. Bigtable runs in clusters and scales horizontally.
 
 
