@@ -972,3 +972,62 @@ SOA is a start of authority record
 - Reserved addresses stay attached to a VM when it is not in use and stay attached until released. This is different from ephemeral addresses, which are released automatically when
 a VM shuts down.
 
+
+============================================================================================================================================================
+Deploying application with cloud launcher and deployment manager
+============================================================================================================================================================
+
+- Deployment of solution is done using cloud launcher
+- Deployment of application is done using deployment manager
+- Cloud launcher and deployment manager lets us to deploy applications and necessary resources without having to configure those resources ourself
+
+- Cloud launcher is nothing but marketplace which is a central repository of applications and data sets that can be deployed to GCP envrionment
+
+- We can create our own solution configuration files so users can launch preconfigured solution
+- Deployment manager configuration files are written yaml syntax
+- Example yaml file for a VM
+	resources:
+	- type: compute.v1.instance
+		name: ace-exam-deployment-vm
+		properties:
+			machineType: [MACHINE_TYPE_URL]
+			disks:
+	[KEY]:[VALUE]
+	[KEY]:[VALUE]
+
+- If your deployment confi gurations are becoming complicated, you can use deployment templates. Templates are another text fi le you use to defi ne resources and import those
+resources into confi guration fi les.
+
+- We can launch deployment manager templates using the gcloud as shown below
+	gcloud deployment-manager deployments create quickstart-deployment --config vm.yaml
+
+============================================================================================================================================================
+Configuring Access and Security
+============================================================================================================================================================
+
+- The preferred way to assign permissions to users, groups and service accounts is through IAM system
+- Before that, permissions were granted using what are now known as primitive roles, which are fairly coarse-grained.
+- Primitive roles may have more permissions than you want an identity to have.
+- Common task relate IAM
+	viewing account IAM assignments
+	Assigning IAM roles
+	Defining custom roles
+- Primitive roles were used prior to IAM. There are three primitive roles: owner, editor, and viewer.
+- IAM roles are nothing but a collection on permissions
+- To list of users and roles assigned across a project
+	gcloud projects get-iam-policy ace-exam-project
+- Predefined roles are grouped by service
+- Listing permissions granted with a particular role
+	gcloud iam roles describe roles/<role_name>
+- Assigining a role to user in a project
+	gcloud projects add-iam-policy-binding ace-exam-project --member user:jane@aceexam.com --role roles/appengine.deployer
+- IAM Roles Support Least Privilege and Separation of Duties
+- If the set of predefined IAM roles does not meet your needs, you can define a custom role.
+- Not all permissions are available for use in a custom role.
+
+- Service accounts are assigned to VMs, which then use the permissions available to the service accounts to carry out tasks.
+- Service accounts are used to provide identities independent of human users.
+
+- Scopes are permissions granted to a VM to perform some operation. Scopes authorize the access to API methods.
+- A scope is specified using a URL that starts with https://www.googleapis.com/auth/ and is then followed by permission on a resource.
+	eg - https://www.googleapis.com/auth/bigquery.insertdata
