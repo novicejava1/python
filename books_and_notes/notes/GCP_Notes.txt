@@ -807,4 +807,168 @@ records.
 - Bigtable is designed for petabyte-scale databases. IOT, data science applications
 - This database is designed to provide consistent, low-millisecond latency. Bigtable runs in clusters and scales horizontally.
 
+============================================================================================================================================================
+Deploying Storage in Google Cloud Platform
+============================================================================================================================================================
+
+- Connecting to Cloud SQL database
+	gcloud sql connect ace-exam-mysql –user=root
+- Once connected you can create database, tables and load and query your data
+- Cloud SQL enables both on-demand and automatic backups.
+	gcloud sql backups create ––async ––instance [INSTANCE_NAME]
+	gcloud sql instances patch [INSTANCE_NAME] –backup-start-time [HH:MM]
+
+- You add data to a Datastore database using the Entities option in the Datastore section of the console.
+- Document database can be queried using GQL query language
+- Backup of datastore require a cloud storage bucket to hold backup file
+- Users creating backups need the datastore.databases.export permission.
+- The Cloud Datastore Import Export Admin role has both permissions
+- Create backup of datastore that is export datastore
+	gcloud datastore export –namespaces='(default)' gs://ace_exam_backups
+- Import a datastore
+	gcloud datastore import gs://ace_exam_backups/[FILE].overall_export_metadata
+
+- BigQuery is a fully managed database service, so Google takes care of backups and other basic administrative tasks.
+- Estimating the cost of the query and and checking the status of job need to be taken cared manually
+	bq ––location=[LOCATION] query ––use_legacy_sql=false ––dry_run [SQL_QUERY]
+- Pricing calculator can be further used to estimate the cost based on the data processing will be done by bigquery
+- Jobs in BigQuery are processes used to load, export, copy, and query data. Jobs are automatically created when you start any of these operations.
+- Check bigquery job status
+	bq --location=US show -j gcpace-project:US.bquijob_119adae7_167c373d5c3
+
+- Cloud spanner is a global relational database
+- Cloud Spanner is a managed database service, so you will not have to patch, backup, or perform other basic data administration tasks.
+
+- Two tasks need to be done to deploy pub/sub queue
+	Create a topic
+	Create a subscription
+- Topics received messages and applicaiton subscribe to topic to consume messages
+- Subscriptions can be pulled in which it reads data or pushed in which it writes messages to endpoints
+- If you want to use a push subscription, you will need to specify the URL of an endpoint to receive the message.
+- gcloud commands to create topic and subscriptions
+	gcloud pubsub topics create [TOPIC-NAME]
+	gcloud pubsub subscriptions create [SUBSCRIPTION-NAME] ––topic [TOPIC-NAME]
+
+- Bigtable is a NoSQL database and does not use the SQL command.
+- the cbt command has subcommands to create tables, insert data, and query tables
+	gcloud components update
+	gcloud components install cbt
+
+- Cloud Dataproc is Google’s managed Apache Spark and Apache Hadoop service. Spark supports analysis and machine learning, while Hadoop is well suited to batch, big data applications. 
+- Three types of cluster supported
+	Single node - for development purpose
+	Standard - one master node
+	HA - three master node
+- The job types that can be submitted are 
+	Spark, PySpark, SparkR, Hive, Spark SQL, Pig, or Hadoop.
+- Commands to create dataproc cluster
+	gcloud dataproc clusters create cluster-bc3d ––zone us-west2-a
+- Submit a spark job
+	gcloud dataproc jobs submit spark ––cluster cluster-bc3d ––jar ace_exam_jar.jar
+- Spark has a machine learning library, called MLlib which is used to build ML models
+
+
+============================================================================================================================================================
+Loading data into storage
+============================================================================================================================================================
+
+- Cloud Storage is used for a variety of storage use cases, including long-term storage and archiving, file transfers, and data sharing.
+- Cloud SQL Database instance can be exported into the Cloud storage file in either SQL or CSV format
+- SQL is useful to import into another relational db and CSV is useful to import into non relational db
+
+- Importing and exporting data from datastore is done using CLI
+- Datastore uses a namespace data structure to group entities that are exported
+
+- Bigquery users can export and import tables using cloud console and cli
+
+- Cloud Spanner users can import and export data using Cloud Console.
+
+- Cloud Bigtable does not have an Export and Import option in the Cloud Console or in gcloud. You have two other options: using a Java application
+for importing and exporting or using the HBase interface to execute HBase commands.
+
+- Cloud Dataproc is not a database like Cloud SQL or Bigtable; rather, it is a data analysis platform. These platforms are designed more for data manipulation, statistical analysis,
+machine learning, and other complex operations
+
+============================================================================================================================================================
+Networking VPC and VPN
+============================================================================================================================================================
+
+- VPC is a software version of physical networks that link resources in project
+- VPC are global resources and are not tied to region or zone
+- VPC contain subnets whic are regional resources. 
+- Subnets provide private internal addresses. These addresses are used to communicate with google apis and other services
+- Shared VPC's can be created and used by projects
+- When a VPC is created, subnets are created in each region. GCP chooses a range of IP addresses for each subnet when creating an auto mode network.
+- VPC configuration includes firewall rules, dynamic routing and dns server policy
+- VPC can be created using the gcloud
+	gcloud compute networks create ace-exam-vpc1 --subnet-mode=auto
+	gcloud compute networks create ace-exam-vpc1 --subnet-mode=custom
+- CIDR addresses consist of two sets of numbers, a network address for identifying a subnet and a host identifier.
+
+- To create shared vpc shared vpc admin role need to be assigned to org member
+	gcloud compute shared-vpc [HOST_PROJECT_ID]
+- VPC peering can be used for interproject traffic when an organization does not exist.
+	gcloud compute networks peerings create
+	Create VPC peering networks on two networks and those will private traffic to flow between two VPC's
+
+- Firewall rules are defined at the network level and used to control the flow of network traffic to VMs. They allow or deny a kind of traffic on a particular port
+- They also are applied to traffic in one direction, either incoming (ingress) or outgoing (egress) traffic.
+- firewall is stateful which means if traffic is allowed in one direction and a connection established, it is allowed in the other direction.
+- All VPCs start with two implied rules: One allows egress traffic to all destinations (IP address 0.0.0.0/0), and one denies all incoming traffic from any source (IP address
+0.0.0.0/0). Both implied rules have priority 65535,
+- Firewal rules consist of the following
+	Direction - ingress or egress
+	Priority - number to identify the priority of the rule
+	Action - Allow or Deny
+	Target - Resources to be allowed or denied
+	Source/Destination 
+	Protocol/Port
+	Enforcement Status - Either enabled or disabled
+- VPC creates default network with four Firewall rules by default (port 22, 3389, ICMP and VM communication)
+	gcloud compute firewall-rules create
+
+- VPN allows to securely transfer network traffic from Google network to own network
+- In the Tunnels section, you configure the other network endpoint in the VPN.
+- You specify a name, description, and IP address of the VPN gateway on your network. You can specify which version of the Internet Key Exchange (IKE) protocol to use.
+- Shared secret is required to configure the VPN endpoint
+- Routing options to choose are Dynamic, Route-Based, or Policy-Based Routing.
+- Create a VPN tunnel using gcloud
+	gcloud compute vpn-tunnels create NAME --peer-address=PEER_ADDRESS --sharedsecret=
+SHARED_SECRET --target-vpn-gateway=TARGET_VPN_GATEWAY
+
+============================================================================================================================================================
+Networking DNS, Load Balancing and IP addressing
+============================================================================================================================================================
+
+- Cloud DNS is a managed service providing authoritative domain naming services. It is HA, low latency and scalable
+- Load balancer services offered by GCP can be categorized as follows
+	HTTP(S), SSL Proxy, TCP Proxy, Network TCP/UDP, and Internal TCP/ UDP Network
+- Create a DNZ managed zone and add records like A and AAAA Canonical name
+- Public zones are accessible from internet and Private zones provide name services to GCP resources like VM's and LB's
+- DNSSEC is designed to prevent spoofing (a client appearing to be some other client) and cache poisoning (a client sending incorrect information
+to update the DNS server).
+- When a zone is created, NS and SOA records are added. NS is a name server record that has the address of an authoritative server that manages the zone information. 
+SOA is a start of authority record
+
+- Load balancers can distribute load within a single region or across multiple regions. They can be divided into three based on the features
+	Global v/s regional
+	External v/s internal
+	Traffic type such as HTTP and TCP
+- Global LB
+	HTTPS, SSL Proxy, TCP Proxy
+- Regional LB
+	Internal TCP/UDP
+	Network TCP/UDP
+- External load balancers distribute traffic from the Internet, while internal load balancers distribute traffic that originates within GCP.
+- The Internal TCP/UDP load balancer is the only internal load balancer.
+- The HTTP(S), SSL Proxy, TCP Proxy, and Network TCP/UDP load balancers are all external.
+- Creating a load balancer requires the following configuration
+	Selecting the type of LB to create
+	Configure the backend where the traffic will be routed
+	Configure the frontend from where the traffic will be orginated
+- Create LB
+	gcloud compute forwarding-rules create ace-exam-lb --port=80 --target-pool ace-exam-pool
+- Static external IP addresses can be reserved using Cloud Console or the command line.
+- Reserved addresses stay attached to a VM when it is not in use and stay attached until released. This is different from ephemeral addresses, which are released automatically when
+a VM shuts down.
 
