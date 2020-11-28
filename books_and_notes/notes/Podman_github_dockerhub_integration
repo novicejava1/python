@@ -1,0 +1,91 @@
+Purpose - Linux container integrate GitHub and DockerHub for Automatedbuilds of Images
+
+Pre-requisite -
+Fedora 32 installed
+Podman installed
+
+Procedure -
+
+Step1: Create an account on DockerHub and GitHub if not present already
+
+Step2: Create a repository named PodmanProjects in GitHub
+
+Create a public repository named PodmanProjects in GitHub with optional LICENSE and README.md file. Here the Git repository that i have created for this activity
+
+https://github.com/novicejava1/PodmanProjects.git
+
+Step3: Clone the GitHub Repository
+
+[root@fed32 home]# pwd
+/home
+[root@fed32 home]# git clone https://github.com/novicejava1/PodmanProjects.git
+Cloning into 'PodmanProjects'...
+remote: Enumerating objects: 4, done.
+remote: Counting objects: 100% (4/4), done.
+remote: Compressing objects: 100% (4/4), done.
+remote: Total 4 (delta 0), reused 0 (delta 0), pack-reused 0
+Receiving objects: 100% (4/4), done.
+[root@fed32 home]# ls -ltr PodmanProjects/
+total 8
+-rw-r--r--. 1 root root   59 Oct 26 13:14 README.md
+-rw-r--r--. 1 root root 1068 Oct 26 13:14 LICENSE
+
+Step3: Push the Dockerfile along with static content web page to this GitHub reposotory
+
+Create a Dockerfile under PodmanProjects repository that is cloned locally.
+
+[root@fed32 PodmanProjects]# cat Dockerfile 
+#: Version 0.0.1
+
+FROM fedora:32
+
+MAINTAINER Sudhir Bhoga "sudhirbhoga@gmail.com"
+
+RUN dnf -y install httpd
+
+COPY hello.html /var/www/html/hello.html
+
+CMD [ "/usr/sbin/httpd" , "-DFOREGROUND" ]
+
+EXPOSE 80
+
+Create a static content web page
+
+[root@fed32 PodmanProjects]# cat hello.html 
+<html>
+<title>Hello World</title>
+<body>
+<h1>Hello Everyone. Welcome to Podman Learning</h1>
+</body>
+</html>
+
+Push the Dockerfile along with static content web page to the GitHub repository. Initialize the git user name and email address before commiting the changes.
+
+[root@fed32 PodmanProjects]# git config --global user.name "novicejava1"
+[root@fed32 PodmanProjects]# git config --global user.email "sudhirbhoga@gmail.com"
+
+[root@fed32 PodmanProjects]# git add Dockerfile hello.html 
+[root@fed32 PodmanProjects]# git commit -m "Dockerfile for Apache http server with static file content"
+[root@fed32 PodmanProjects]# git push origin main
+
+Step4: Create a Repository in DockerHub and integrate with GitHub Repository
+
+Here in this step we are going to create a new DockerHub repository named 'apacheweb' for pushing our Apache HTTP server image. You can carry out this step from DockerHub portal under Repositories section - Create Repository by providing the repository name and visibility. 
+
+Once this is done you need to configure the Build Settings to integrate DockerHub with GitHub. Click on the GitHub which showns Disconnected and this will take you to the page to Allow Docker Hub Builder to be authorized and allowed access to connect to the GitHub respository as configured with the details shown in below screen shot.
+
+You can click on the Save and Build button which will trigger a build for the Dockerfile present in the Github repository which is connected now. 
+
+Step5: Validate the new image named apacheweb:latest under the repository
+
+Once the build process is completed the new image with name apacheweb:latest should be visible under the repository.
+
+
+This can also be validate by going into Builds - Automated Builds for our repository which will show the latest build status as SUCCESS as shown below if there are no errors.
+
+
+Hope you enjoyed reading this article. Thank you.
+
+
+
+

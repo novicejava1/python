@@ -1,0 +1,112 @@
+Purpose - Linux container data persistence using volumes with Podman
+
+Pre-requisite -
+Fedora 32 installed
+Podman installed
+
+
+Volumes - 
+Volumes in Linux containers are used persistent data storage. They help in sharing the data between multiple containers. Also the data within these volumes can persist even if the containers are destroyed. Volumes also help in easy management of data (ie. backup and migrating). 
+
+Lets consider an example Jenkins image. Jenkins is used to build artifact using build jobs. There might multiple jobs created by various user. So, we can create volumes and map them to Linux container filesystem such that all the jobs that are created with the filesystem of containers automatically mapped to the volumes on the host machine. Volumes can also help in sharing code and configuration data between multiple containers.
+
+In this article we will see how we can create volumes and map them to container filesystem. Also we inspect the volumes to check where exactly on the host machine these volumes are stored. We will them map these volumes to running container and create persistent data which will be available even when the container is destroyed. We will again map this volume to a new container and map the volume to make sure our persistent data is still available.
+
+
+Procedure -
+
+Step1: Create a persistent data storage volume
+
+Lets create a persistent data storage volume using the Podman utility as shown below. Once the volume is created we list the available volumes in our host machine using ls command.
+
+[root@fed32 ~]# podman volume create static
+
+[root@fed32 ~]# podman volume ls
+DRIVER      VOLUME NAME
+local       static
+
+Step2: Inspect the volume details
+
+Volume can be inspected using podman utility as shown below. It will provide useful information about the type of volume created and where the volume data is stored on the local host machine. In our case we have created a default volume which is of type local. We can also create other types of volumes like remove volumes and volumes on cloud provider using the respective drivers.
+
+[root@fed32 ~]# podman volume inspect static
+[
+     {
+          "Name": "static",
+          "Driver": "local",
+          "Mountpoint": "/var/lib/containers/storage/volumes/static/_data",
+          "CreatedAt": "2020-10-26T05:30:40.666315523+05:30",
+          "Labels": {
+               
+          },
+          "Scope": "local",
+          "Options": {
+               
+          },
+          "UID": 0,
+          "GID": 0,
+          "Anonymous": false
+     }
+]
+
+Step3: Map the volume static to a busybox container name busyman
+
+In this step lets try to map the volume which we created to a container named busyman which we will create from the busybox image.
+
+[root@fed32 ~]# podman run -it --name busyman3 -v static:/apps busybox
+/ # cd /apps
+/apps # hostname
+ad2a74bd296c
+
+With the above command we will be able to spin up a container named busyman from the busybox image and map the volume static to /apps folder in linux container filesystem. Currently there is no persistent data present the volume that we created and mapped to the linux container.
+
+Step4: Create static web page content in linux container filesystem /apps
+
+[admin@fed32 ~]# podman start busyman
+busyman3
+[admin@fed32 ~]# podman exec -it busyman sh
+/ # cd /apps
+/apps # cat hello.html 
+Hello World !!
+
+Step5: Destroy the container and validate that the persistant is still available
+
+First lets stop the running container and destroy it using the rm command
+
+[admin@fed32 ~]# podman stop busyman
+
+[admin@fed32 ~]# podman rm busyman
+
+Now, lets validate if the static content page is still available in the volume store or not.
+
+[root@fed32 _data]# pwd
+/var/lib/containers/storage/volumes/static/_data
+[root@fed32 _data]# ls -ltr
+total 4
+-rw-r--r--. 1 root root 15 Oct 26 05:34 hello.txt
+
+Step6: Create a new container and mount the static volume into /stack folder in container
+
+In this step lets try to create a new container names busyman2 and mount the volume static into /stack folder in linux container filesystem. Once we are connected to the new container we should be able to see the static web page content which was created in first container busyman as shown below.
+
+[root@fed32 ~]# podman run -it --name busyman2 -v static:/stack busybox
+/ # ls -l /stack
+hello.html
+
+Step7: Destroy the volume
+
+As a final step if there is no use of the volume static that is created and we want to destroy it. First we need to stop the respective containers which are using those volumes and then remove the volume as shown below.
+
+[admin@fed32 ~]# podman stop busyman3
+
+[root@fed32 _data]# podman volume rm static
+
+This will remove the volume that we have created initially permanently.
+
+
+Hope you enjoyed reading this article. Thank you..
+
+
+
+
+
