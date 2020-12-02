@@ -7,6 +7,8 @@ Python 3.8 installed
 Python request library installed
 Python json library installed
 
+In this article we will see how we can use a basic Python application to trigger REST API calls using the Podman REST API service url. We will see how we can trigger either a GET or POST request with the required parameters passed along with the request to retrieve information or manage the resource from the standalone Podman system
+
 Procedure - 
 
 Start the Podman service on TCP channel
