@@ -1,0 +1,25 @@
+#:kivy 1.11.1
+
+<MyGridLayout>:
+  cols: 3
+  AnchorLayout:
+    anchor_x: 'left'
+    anchor_y: 'top'
+    size_hint: .25, .25
+    Button:
+      text: "0"
+      size_hint_y: 0.25
+  GridLayout:
+    cols: 2
+    Button:
+      text: "Python"
+    Button:
+      text: "Java"
+  AnchorLayout:
+    anchor_x: 'right'
+    anchor_y: 'top'
+    size_hint: .25, .25
+    Button:
+      text: "1"
+      size_hint_y: 0.25
+

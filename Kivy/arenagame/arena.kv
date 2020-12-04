@@ -1,0 +1,18 @@
+#:kivy 1.11.1
+
+<ArenaGame>:
+    rows: 2
+    Label:
+        canvas.before:
+            Rectangle:
+                size: self.size
+                pos: self.pos
+        canvas:
+            Ellipse:
+                size: 50, 50
+                pos: self.center_x - 20, self.y
+                source: 'appicon.png'
+    Label:
+        text: 'Score'
+        valign: 'middle'
+        size_hint: .25, .25

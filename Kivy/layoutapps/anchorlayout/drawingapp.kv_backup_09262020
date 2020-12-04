@@ -1,0 +1,49 @@
+#:kivy 1.11.1
+
+
+<MyFloatLayout>:
+    AnchorLayout:
+        anchor_x: "left"
+        anchor_y: "top"
+        #Button:
+        #    text: "Color"
+        #    size_hint: .15, 1
+        RelativeLayout:
+            size_hint: .15, 1
+            Label:
+                canvas:
+                    Color:
+                        rgba: 1, 0, 0, 1
+                    Rectangle:
+                        size: 20, 20
+                        pos: 0, root.top - 20
+            Label:
+                canvas:
+                    Color:
+                        rgba: 0, 1, 0, 1
+                    Rectangle:
+                        size: 20, 20
+                        pos: 30, root.top - 20
+            Label:
+                canvas:
+                    Color:
+                        rgba: 0, 0, 1, 1
+                    Rectangle:
+                        size: 20, 20
+                        pos: 60, root.top - 20
+    AnchorLayout:
+        anchor_x: "center"
+        anchor_y: "top"
+        RelativeLayout:
+            size_hint: .7, 1
+            Label:
+                canvas:
+                    Rectangle:
+                        size: self.size
+                text: "Drawing Space"
+    AnchorLayout:
+        anchor_x: "right"
+        anchor_y: "top"
+        Button:
+            text: "Shapes"
+            size_hint: .15, 1

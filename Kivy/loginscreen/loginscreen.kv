@@ -1,0 +1,52 @@
+#:kivy 1.11.1
+
+<LoginScreen>:
+    orientation: 'vertical'
+    Label:
+        text: 'Header : Login Screen'
+        font_size: 25
+        size_hint: 1, .25
+        color: 1, 1, 0, 1
+        canvas.before:
+            Color: 
+                rgba: .35, .10, .15, 1
+            Rectangle:
+                size: self.size
+                pos: self.pos
+           
+    GridLayout:
+        cols: 2
+        BoxLayout:
+            orientation: 'vertical'
+            spacing: 20
+            Label:
+                text: 'Username'
+                font_size: 16
+            TextInput:
+                text: 'Enter your username'
+                multiline: False
+            Label:
+                text: 'Password'
+                font_size: 16
+            TextInput:
+                text: 'Enter your password'
+                multiline: False
+            Button:
+                text: 'Sign In'
+        Label:
+            canvas:
+                Rectangle:
+                    size: self.size 
+                    pos: self.pos
+                    source: 'appicon.png'
+    Label:
+        text: 'Footer : Copyright Reserved'
+        font_size: 25
+        size_hint: 1, .25
+        color: 1, 1, 0, 1
+        canvas.before:
+            Color:
+                rgba: .35, .10, .15, 1
+            Rectangle:
+                size: self.size
+                pos: self.pos   

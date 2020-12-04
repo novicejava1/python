@@ -1,0 +1,33 @@
+#:kivy 1.11.1
+
+<MyBoxLayout>:
+    orientation: 'vertical'
+    padding: 10, 10, 10, 10
+    spacing: 10
+
+    canvas:
+        Color:
+            rgba: 1,.5,.5,.75
+        Rectangle:
+            size: self.size
+            pos: self.pos
+            source: 'appicon.png'
+
+    Label:
+        text: "First Name"
+        font_size: 32
+        bold: True
+    TextInput:
+        multiline: False
+        hint_text: 'Insert alphabet character'
+    Label:
+        text: "Second Name"
+        font_size: 32
+        bold: True
+    TextInput:
+        multiline: False
+        hint_text: 'Insert alphabet character'
+    Button:
+        text: "Submit"
+        background_normal: ''
+        background_color: 1,.5,.5,.75
